@@ -1,0 +1,36 @@
+.mobile_tab_bar_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 0 20px;
+    border-top: 0.5px solid var(--fade-border);
+}
+
+.mobile_tab_bar_icon_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 25%;
+    max-width: 60px;
+}
+
+.mobile_tab_bar_icon_active_bar{
+    height: 5px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+.mobile_tab_bar_icon{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 5px;
+}
+
+.mobile_tab_bar_icon_label{
+    font-weight: 600;
+    font-size: var(--normal-font);
+}

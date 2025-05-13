@@ -1,0 +1,4 @@
+noticable
+1. cart (CRUD)
+2. wishlist (CRUD)
+3.in cart, if item is outofstock it shouldnt be markable.

@@ -1,0 +1,59 @@
+.mobile_view_card_component_container{
+    padding: 5px 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-height: 100vh;
+}
+
+.cart_card_checkout_container{
+    display: flex;
+    flex-direction: row;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    padding:  10px 20px;
+    background-color: var(--background-color);
+    box-shadow: 0 0 2px var(--border-color);
+}
+
+.cart_card_select_all_container{
+    margin-right: 30px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+
+.cart_card_total_container{
+    display: flex;
+    flex-direction: column;
+}
+.cart_card_total_text{
+    font-size: var(--normal-font);
+    font-weight: 600;
+}
+
+.cart_card_checkout_button_container{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-left: auto;
+}
+
+.cart_card_checkout_button{
+    height: 40px;
+    width: 100px;
+    color: white;
+    background-color: var(--accent);
+    border: none;
+    outline: none;
+    border-radius: 5px;
+    font-weight: 600;
+}
+
+.cart_card_checkout_button:disabled{
+    background-color: var(--border-color);
+    cursor: not-allowed;
+}

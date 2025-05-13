@@ -1,0 +1,333 @@
+.desktop_navbar_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    /*border-bottom: 0.5px solid var(--fade-border);*/
+    padding: 10px 20px;
+    position: fixed;
+    left: 0;
+    right: 0;
+    top: 0;
+    z-index: 10;background-color: var(--background-color);
+}
+
+.desktop_navbar_left{
+    width: 70px;
+    height: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+.desktop_navbar_left_app_logo{
+    height: 100%;
+    width: 100%;
+    object-fit: contain;
+}
+
+.desktop_navbar_center{
+    width: 450px;
+    max-width: 30%;
+    height: 30px;
+    position: relative;
+}
+
+
+
+.desktop_navbar_category_container{
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    border-radius: 5px;
+    padding: 5px 20px;
+    transition: all ease-in-out .2s;
+    position: relative;
+}
+
+.desktop_navbar_category_container:hover{
+    background-color: var(--background-fade);
+    color: white;
+}
+
+
+
+.desktop_navbar_categories_container{
+    position: absolute;
+    top: calc(var(--bar-height) - 10px);
+    background-color: var(--background-color);
+    border-radius: 0 0 5px 5px;
+    box-shadow: 0 0 20px var(--background-fade);
+    padding: 10px;
+    color: var(--color);
+    min-width: 200px;
+}
+
+.desktop_navbar_category{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    width: 100%;
+    border-radius: 5px;
+}
+
+.desktop_navbar_category:hover{
+    background-color: var(--background-fade);
+}
+
+.desktop_navbar_category_image_container{
+    height: 30px;
+    width: 30px;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.desktop_navbar_category_image{
+    height: 20px;
+    width: 20px;
+    object-fit: fill;
+    border-radius: 50%;
+}
+
+.desktop_navbar_category_name{
+    font-size: var(--big-font);
+    font-weight: 600;
+}
+
+
+.desktop_navbar_right{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+}
+
+.desktop_navbar_right_option_container{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    font-size: var(--normal-font);
+    position: relative;
+}
+
+.desktop_navbar_right_option_label{
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.desktop_navbar_right_option_notification_count{
+    position: absolute;
+    right: -5px;
+    top: -5px;
+    height: 15px;
+    width: 15px;
+    font-size: var(--normal-font);
+    font-family: Poppins, sans-serif;
+    font-weight: bold;
+    background-color: red;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+}
+
+.desktop_navbar_right_picture_menu_container{
+    height: 30px;
+    width: 30px;
+    background-color: var(--color);
+    border-radius: 50%;
+    overflow: hidden;
+    cursor: pointer;
+    border: 0px solid var(--accent-fade);
+    transition: border ease-in-out  .1s;
+}
+.desktop_navbar_right_picture_menu_container:hover{
+    border-width: 2px;
+}
+
+.desktop_navbar_right_picture_menu_container.menu_triggered{
+    border-width: 2px;
+}
+
+.user_profile_picture{
+    height: 100%;
+    width: 100%;
+    object-fit: fill;
+}
+
+.desktop_me_options_container{
+    position: absolute;
+    right: 20px;
+    top: 50px; /* the bar height is 30px + the padding 10px + random 10px*/
+    display: flex;
+    flex-direction: column;
+    background-color: var(--background-color);
+    box-shadow: 0 0 20px var(--background-fade);
+    width: min(100%, 320px);
+    border-radius: 10px;
+    opacity: 0;
+    scale: 0;
+    transition: opacity ease-in-out .375s;
+    overflow: hidden;
+}
+
+.desktop_me_profile_container{
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.desktop_me_profile_picture_container{
+    height: 30px;
+    width: 30px;
+    overflow: hidden;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.desktop_me_options_close{
+    margin-left: auto;
+}
+
+.desktop_me_profile_picture{
+    height: 100%;
+    width: 100%;
+    cursor: pointer;
+}
+
+.desktop_me_profile_name_email{
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    justify-content: center;
+}
+
+.desktop_me_profile_name{
+    font-weight: bold;
+    font-size: var(--bigger-font);
+}
+
+.desktop_me_profile_email{
+    font-size: var(--big-font);
+    font-weight: 600;
+}
+
+.desktop_me_options{
+    display: flex;
+    flex-direction: column;
+}
+
+.desktop_me_option_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    height: 50px;
+    padding: 15px 20px;
+    cursor: pointer;
+    transition: all ease-in-out .2s;
+}
+
+.desktop_me_option_container:hover{
+    background-color: var(--background-fade);
+}
+
+.desktop_me_option_left{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30px;
+    width: 30px;
+}
+
+.desktop_me_option_right{
+    font-size: var(--big-font);
+    font-weight: bold;
+}
+
+.desktop_me_options_bottom{
+    height: 40px;
+    background: linear-gradient(45deg, var(--accent-fade), var(--text-fade));
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    font-size: var(--big-font);
+    gap: 10px;
+    font-weight: bold;
+}
+.desktop_me_options_container.desktop_me_options_container_open{
+    scale: 1;
+    opacity: 1;
+}
+
+@media (max-width: 767px) {
+    .desktop_me_options_container{
+        position: fixed;
+        right: 0;
+        top: 0;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    .desktop_me_profile_container{
+        display: flex;
+        flex-direction: row;
+        gap: 15px;
+        align-items: center;
+        padding: 15px 25px;
+    }
+    
+    .desktop_me_profile_name_email{
+        display: flex;
+        flex-direction: column;
+        height: 100%;
+        justify-content: center;
+    }
+    
+    .desktop_me_profile_name{
+        font-weight: bold;
+        font-size: var(--bigger-font);
+    }
+    
+    .desktop_me_profile_email{
+        font-size: var(--big-font);
+        font-weight: 600;
+    }
+    
+    .desktop_me_options{
+        display: flex;
+        flex-direction: column;
+        margin-top: 25px;
+    }
+    
+    .desktop_me_option_container{
+        display: flex;
+        flex-direction: row;
+        align-items: center;
+        gap: 20px;
+        height: 70px;
+        padding: 15px 25px;
+    }
+    
+    .desktop_me_option_container:hover{
+        background-color: var(--background-fade);
+    }
+    
+    .desktop_me_option_left{
+        display: flex;
+        justify-content: center;
+        align-items: center;
+    }
+    .desktop_me_options_bottom{
+        margin-top: auto;
+    }
+}

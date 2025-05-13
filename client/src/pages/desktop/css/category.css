@@ -1,0 +1,62 @@
+.desktop_view_category_container{
+    padding: var(--desktop-padding);
+    min-height: 65vh;
+}
+
+.desktop_view_category_header_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    background-color: var(--background-color);
+    z-index: 1;
+    padding-bottom: 10px;
+    position: sticky;
+    top: calc(var(--bar-height) + 1px);
+}
+
+.desktop_view_categories_sort_trigger_container{
+    display: flex;
+    flex-direction: row;
+    position: relative;
+    gap: 10px;
+    align-items: center;
+    padding: 5px 15px;
+    cursor: pointer;
+    min-width: fit-content;
+    border-radius: 5px;
+    transition: all ease-in-out .2s;
+}
+
+.desktop_view_categories_sort_trigger_container:hover{
+    background-color: var(--background-fade);
+    color: white;
+}
+
+.desktop_view_sorter_container{
+    position: absolute;
+    top: calc(100% + 10px);
+    display: flex;
+    flex-direction: column;
+    color: var(--color);
+    gap: 5px;
+    background-color: var(--background-color);
+    padding: 10px 5px;
+    border-radius: 5px;
+    box-shadow: 0 0 20px var(--background-fade);
+}
+
+.desktop_view_sorter{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    cursor: pointer;
+    align-items: center;
+    height: 30px;
+    min-width: 100px;
+    padding: 0 10px;
+    border-radius: 5px;
+}
+
+.desktop_view_sorter:hover{
+    background-color: var(--background-fade);
+}

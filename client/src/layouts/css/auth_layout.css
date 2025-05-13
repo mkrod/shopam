@@ -1,0 +1,109 @@
+.auth_layout_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-color);
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: auto;
+}
+
+.auth_layout_content{
+    display: flex;
+    flex-direction: column;
+    padding: 20px 30px;
+}
+
+.auth_layout_hr_line_or{
+    position: relative;
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 20px;
+    margin-bottom: 20px;
+}
+
+.auth_layout_hr_line{
+    border-top: 1px solid var(--background-fade);
+    width: 100%;
+}
+
+.auth_layout_or_text{
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    font-size: var(--normal-font);
+    font-weight: 600;
+    background-color: var(--background-color);
+    padding: 5px;
+}
+
+.auth_layout_oauth_container{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.auth_layout_oauth{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    height: 50px;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid var(--border-color);
+    border-radius: 25px;
+    cursor: pointer;
+    transition: background-color ease-in-out .1s;
+}
+
+.auth_layout_oauth:hover{
+    background-color: var(--background-fade);
+    color: var(--background-color);
+}
+
+.auth_layout_oauth_icon{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.auth_layout_ui_switch{
+    height: 80px;
+    display: flex;
+    gap: 5px;
+    justify-content: center;
+    align-items: center;
+}
+
+.auth_layout_ui_switch_text, .auth_layout_ui_switch_link{
+    font-size: var(--normal-font);
+    font-weight: 500;
+}
+
+.auth_layout_ui_switch_link{
+    color: blue;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+@media (min-width: 768px) {
+
+    
+    .auth_layout_content{
+        box-shadow: 0 0 20px var(--background-fade);
+        border-radius: 10px;
+        width: 350px;
+        min-height: 500px;
+    }
+}
+@media (max-width: 768px) {
+    .auth_layout_content{
+        width: 100%;
+    }
+}

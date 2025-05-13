@@ -1,0 +1,103 @@
+.root_layout_container{
+    background-color: var(--background-color);
+    color: var(--color);
+    /*overflow: auto;*/
+    min-height: 100vh;
+    
+   
+}
+.root_layout_popup_modal_container{
+    position: fixed;
+    top: 20px;
+    right: -100%;
+    min-width: 250px;
+    max-width: 300px;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+    background-color: var(--background-color);
+    box-shadow: 0 0 5px var(--fade-border);
+    border-radius: 10px 0 0 10px;
+    padding: 10px;
+    transition: right ease-in-out .375s;
+    z-index: 99;
+}
+
+.root_layout_popup_modal_container.popup_modal_active{
+    right: 0;
+}
+
+.root_layout_popup_modal_icon{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.root_layout_popup_modal_messages{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+}
+
+.root_layout_popup_modal_title{
+    font-size: var(--big-font);
+    font-weight: 700;
+    font-family: inherit;
+}
+.root_layout_popup_modal_message{
+    font-size: var(--normal-font);
+    font-weight: 500;
+}
+
+.root_layout_loading_fidget_container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    right: 0;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    background-color: var(--background-fade);
+    opacity: 0;
+    scale: 0;
+    transform: opacity ease-in-out .375s;
+    z-index: 100;
+}
+.root_layout_loading_fidget_container.loading{
+    scale: 1;
+    opacity: 1;
+    cursor: not-allowed;
+}
+.root_layout_loading_fidget_container_loader {
+    width: 40px;
+    aspect-ratio: 1;
+    border-radius: 50%;
+    background: 
+      radial-gradient(farthest-side, var(--accent) 94%,#0000) top/8px 8px no-repeat,
+      conic-gradient(#0000 30%, var(--accent));
+    -webkit-mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+    mask: radial-gradient(farthest-side,#0000 calc(100% - 8px),#000 0);
+    animation: l13 1s infinite linear;
+  }
+  @keyframes l13{ 
+    100%{transform: rotate(1turn)}
+  }
+
+  :root{
+    --bar-height: 50px;
+  }
+
+
+.root_layout_mobile_search_suggestion_container{
+    position: fixed;
+    top: calc(var(--bar-height) + 5px);
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--background-color);
+    z-index: 3;
+    padding: 25px;
+}

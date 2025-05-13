@@ -1,0 +1,27 @@
+.review_card_container{
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    height: fit-content;
+    border: 1px solid var(--background-fade);
+    padding: 10px;
+    border-radius: 5px;
+    margin-bottom: 15px;
+}
+
+.review_card_rating_date_container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.review_card_date{
+    color: var(--text-fade);
+    font-weight: 500;
+    font-size: var(--normal-font);
+}
+
+.review_card_review{
+    font-weight: 600;
+    font-size: var(--normal-font);
+}

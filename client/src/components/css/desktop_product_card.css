@@ -1,0 +1,97 @@
+.desktop_product_card_container{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 30px;
+    overflow: hidden;
+    border: 0.5px solid var(--background-fade);
+    border-radius: 10px;
+    cursor: pointer;
+    position: relative;
+}
+
+.desktop_product_card_image_container{
+    position: relative;
+    background-color: var(--background-fade);
+    aspect-ratio: 1/0.8;
+    overflow: hidden;
+}
+
+.desktop_product_card_image{
+    height: 100%;
+    width: 100%;
+    object-fit: fill;
+}
+
+.desktop_product_card_image_is_loading_container{
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.desktop_product_card_metadata_container{
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    padding: 10px;
+}
+
+.desktop_product_card_metadata_title_container{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+.desktop_product_card_metadata_title{
+    font-weight: 600;
+    font-size: var(--big-font);
+}
+
+.desktop_product_card_price_container{
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 5px;
+}
+
+.desktop_product_card_current_price{
+    font-weight: 600;
+    font-size: var(--bigger-font);
+    margin-bottom: -2px;
+}
+
+.desktop_product_card_prev_price{
+    text-decoration: line-through;
+    color: var(--text-fade);
+    font-size: var(--normal-font);
+    font-weight: 500;
+}
+
+.desktop_product_card_location_container{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.desktop_product_card_location{
+    font-size: var(--big-font);
+    font-weight: 500;
+}
+
+.desktop_product_card_discount_container{
+    position: absolute;
+    right: 20px;
+    top: 20px;
+    background-color: var(--background-color);
+    color: var(--text-fade);
+    padding: 5px;
+    font-size: var(--small-font);
+    border-radius: 5px;
+    font-weight: 600;
+    letter-spacing: 0.8px;
+    font-family: Poppins;
+}

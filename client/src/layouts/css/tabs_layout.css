@@ -1,0 +1,32 @@
+.tabs_navigation_bar_container{
+    display: none;
+}
+
+.desktop_tab{
+    display: flex;
+}
+
+
+@media (max-width: 767px) {
+    .desktop_tab{
+        display: none;
+    }
+    .mobile{
+        display: flex;
+    }
+}
+
+@media (min-width: 768px) and (max-width: 1024px) {
+
+    .mobile{
+        display: none;
+    }
+}
+
+.tabs_navigation_bar_container{
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    min-height: 50px;
+}

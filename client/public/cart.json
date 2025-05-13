@@ -1,0 +1,38 @@
+{
+    "message": "success", 
+    "data": [
+        {
+            "id": "66",
+            "qty": 2,
+            "variant": {
+                "size": "xl",
+                "color":  "Black"
+            }
+        },
+        {
+            "id": "57",
+            "qty": 3
+        },
+        {
+            "id": "22",
+            "qty": 1
+        },
+        { 
+            "id":"96",
+            "qty": "6",
+            "variant": {
+                "size": "sm",
+                "color":  "Blue"
+            }
+        },
+        {
+            "id": "8",
+            "qty": 2
+        },
+        {
+            "id": "69",
+            "qty": "1"
+        }
+        
+    ]
+}

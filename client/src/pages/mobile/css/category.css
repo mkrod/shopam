@@ -1,0 +1,107 @@
+.mobile_view_category_container{
+    min-height: 100vh;
+    padding: var(--y) 0;
+    display: flex;
+    flex-direction: column;
+}
+.mobile_category_header_container{
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    position: sticky;
+    top: calc(var(--bar-height) + 3px);
+    background-color: var(--background-color);
+    z-index: 2;
+    padding: 0 var(--x) 20px var(--x);
+}
+
+.mobile_category_header_label_sort{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+}
+
+.home_mobile_categories_order_container{
+    margin-left: auto;
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    margin-right: 30px;
+}
+
+.home_mobile_categories_order{
+    background-color: var(--background-fade);
+    height: fit-content;
+    padding: 5px 10px;
+    color: white;
+    border-radius: 5px;
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+}
+
+.home_mobile_categories_order_active{
+    background-color: var(--accent);
+}
+
+.home_mobile_categories_title{
+    margin-right: 20px;
+}
+
+.mobile_category_content_container{
+    column-count: 2;
+    gap: 10px;
+    padding: 0 var(--x);
+}
+
+.mobile_category_sorter_section_container{
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: var(--background-fade);
+    z-index: 10;
+    display: flex;
+    flex-direction: column;
+    justify-content: end;
+}
+
+.mobile_category_sorter_container{
+    background-color: var(--background-color);
+    padding: var(--x);
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile_category_sorter_header{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.mobile_category_sorters{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mobile_category_sorter{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    height: 50px;
+    padding: 0 10px;
+}
+
+.mobile_category_sorter_radio{
+    accent-color: var(--accent);
+    background-color: var(--background-color);
+    border: 0.5px solid var(--background-fade);
+    outline: none;
+}

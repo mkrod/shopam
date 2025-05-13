@@ -1,0 +1,104 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200..900&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&family=Quicksand:wght@300..700&family=Roboto:ital,wght@0,100..900;1,100..900&family=Space+Mono:ital,wght@0,400;0,700;1,400;1,700&family=Tagesschrift&display=swap');
+
+
+:root {
+  font-family: "Quicksand", system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+  font-weight: 400;
+
+  color-scheme: light dark auto;
+  color: #242424;
+  background-color: #ffffff;
+
+  font-synthesis: none;
+  text-rendering: optimizeLegibility;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+
+  --background-fade: #0000009d;
+  --accent: #f84913;
+  --accent-sec: #fa5a2a;
+  --accent-fade: #f8491369;
+  --smaller-font: 8px;
+  --small-font: 10px;
+  --normal-font: 12px;
+  --big-font: 15px;
+  --bigger-font: 17px;
+}
+
+*{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  word-break: break-all;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -webkit-user-drag: none;
+  -moz-user-drag: none;
+  outline: none;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button{
+  cursor: pointer;
+  font-family: inherit;
+  font-size: var(--small-font);
+}
+
+.icon_cursor_pointer{
+  cursor: pointer;
+}
+
+input{
+  font-family: inherit;
+}
+
+
+
+@media (prefers-color-scheme: dark) {
+  :root{
+    --background-color: #242424;
+    --background-grad: #515258;
+    --color: #ffffff;
+    --fade-border: #ffffff1c;
+    --border-color: #ffffff8e;
+    --text-fade: #b6b6b6;
+  }
+}
+
+@media (prefers-color-scheme: light) {
+  :root {
+    --background-color: #ffffff;
+    --background-grad: #a4a8b5;
+    --color: #242424;
+    --fade-border: #2424241c;
+    --border-color: #2424248e;
+    --text-fade: #bbbbbb;
+    --text-fade2: #686868;
+  }
+}
+
+
+
+@media (max-width: 767px) {
+  :root{
+    --smaller-font: 8px;
+    --small-font: 10px;
+    --normal-font: 12px;
+    --big-font: 15px;
+    --bigger-font: 17px;
+  }
+  }
+
+
+@media (min-width: 768px) {
+  :root{
+    --smaller-font: 5px;
+    --small-font: 8px;
+    --normal-font: 10px;
+    --big-font: 12px;
+    --bigger-font: 15px;
+  }
+}
+

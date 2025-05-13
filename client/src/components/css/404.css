@@ -1,0 +1,90 @@
+@media (max-width: 600px) {
+
+    .not-found-container__content {
+      margin-left: 0;
+    }
+  
+    .not-found-container__content--info {
+      font-size: 4.8rem;
+    }
+  
+    .not-found-container__content--text {
+      font-size: 1.5rem;
+    }
+
+    .not-found_display{
+      display: flex;
+      flex-direction: column;
+    }
+  }
+  
+  .not-found-container {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    padding-bottom: 20px;
+  }
+  .not-found_nav{
+    font-family: "Inconsolata", monospace;
+    padding: 2.5rem 0 0 5rem;
+    text-transform: uppercase;
+  }
+  
+  .not-found_display{
+    display: flex;
+    flex-direction: row;
+    width: 100%;
+    margin-top: 5.7rem;
+    padding: 0 3rem;
+  }
+  
+  .not-found-display__img{
+    height: auto;
+    width: max(450px, 46%);
+  }
+  
+  .not-found_image{
+    height: 95%;
+    width: 95%;
+    object-fit: contain;
+  }
+  
+  .not-found-display__content{
+    display: flex;
+    flex-direction: column;
+    height: auto;
+    width: max(400px, 40%);
+  }
+  
+  .not-found-display__content--info{
+    font-size: 3rem;
+    line-height: 1.5;
+    font-family: "Space Mono", monospace;
+    text-wrap: break-word;
+  }
+  
+  .not-found-display__content--text{
+    font-family: "Space Mono", monospace;
+    font-size: 17px;
+    font-weight: 400;
+    line-height: 1.7;
+    width: 20rem;
+  }
+  
+  
+  .not-found_btn,
+  .not-found_btn:active,
+  .not-found_btn:hover,
+  .not-found_btn:focus {
+    margin-top: 3rem;
+    font-family: "Space Mono", monospace;
+    color: #fff;
+    background-color: var(--accent);
+    border: none;
+    outline: none;
+    padding: 20px 40px;
+    font-size: 12px;
+    text-transform: uppercase;
+    cursor: pointer;
+    width: fit-content;
+  }
