@@ -22,7 +22,7 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
 
     const navigate = useNavigate();
 
-    const { products, setNote, setCartChanged } = useGlobalProvider();
+    const { products, setNote, setCartChanged, currency } = useGlobalProvider();
     const [product, setProduct] = useState<Product>();
     useEffect(()  => {
         if(!products) return;
@@ -96,8 +96,8 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
                     id: data.id
                 }
             }))}>
-                {product.price && <h4>{product.price.currency + " " +  formatNumberWithCommas(product.price.current)}</h4>}
-                {product.price.prev && <h6 className='cart_card_metadata_prev_price'>{product.price.currency + " " +  formatNumberWithCommas(product.price.prev)}</h6>}
+                {product.price && <h4>{currency.symbol + " " +  formatNumberWithCommas(product.price.current)}</h4>}
+                {product.price.prev && <h6 className='cart_card_metadata_prev_price'>{currency.symbol + " " +  formatNumberWithCommas(product.price.prev)}</h6>}
             </div>
 
             {data.variant && <div className="cart_card_variant_container">

@@ -1,0 +1,91 @@
+.mobile_chceckout_container{
+    display: flex;
+    flex-direction: column;
+    padding: var(--y) var(--x);
+}
+
+.mobile_chceckout_shipping_details_container{
+    display: flex;
+    flex-direction: row;
+    border: 1px solid var(--background-fade);
+    padding: 15px ;
+    border-radius: 10px;
+}
+
+.mobile_chceckout_shipping_details_left{
+    display: flex;
+    flex-direction: column;
+    margin-right: 10px;
+}
+.mobile_chceckout_shipping_details_center{
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    font-size: var(--normal-font);
+    font-weight: 500;
+}
+
+.mobile_checkout_shipping_name_phone{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+}
+
+.mobile_chceckout_shipping_text_fade{
+    color: var(--text-fade);
+}
+
+.mobile_chceckout_shipping_details_edit_container{
+    width: fit-content;
+    display: flex;
+    align-items: center;
+}
+
+.mobile_checkout_product_preview_section{
+    margin-top: 20px;
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile_checkout_product_preview_header{
+    display: flex;
+    flex-direction: row;
+    margin-bottom: 10px;
+}
+
+.mobile_checkout_product_preview_show_hide{
+    color: var(--accent);
+    margin-left: auto;
+}
+
+.mobile_checkout_product_preview{
+    max-height: 300px;
+    overflow: auto;
+}
+
+.mobile_checkout_shipping_method_section{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.desktop_checkout_note_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+}
+
+.desktop_checkout_note_input{
+    font-size: var(--normal-font);
+    border: none;
+    margin-left: auto;
+}
+
+
+
+.mobile_checkout_order_d_em_label{
+    color: var(--text-fade);
+}
+

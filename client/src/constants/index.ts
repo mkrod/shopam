@@ -1,12 +1,26 @@
 //import axios from "axios";
-import { Product, Suggestion } from "./provider";
+import { Currency, Product, Suggestion } from "./provider";
 import { Response } from "./api";
 
-export const appLogoUri : string = "/dt_logo_cropped_no_bg.png";
+export const appLogoUri : string = "/logo_text.png";
 export const appName: string = "ShopAM";
 export const appFavicon: string = "/dt_favicon.png";
+export const currency : Currency[] = [
+  {
+  name: "USD",
+  symbol: "$",
+  },
+  {
+    name: "NGN",
+    symbol: "₦",
+  },
+  {
+    name: "EUR",
+    symbol: "€",
+  }
+];
 export const defaultUserDp : string = "https://i.pinimg.com/236x/9d/b6/0b/9db60bcc99768a7b224d7f8647cb95ce.jpg";
-export const server : string = "http://192.168.43.103:3000/api";
+export const server : string = "https://192.168.43.103:3000/api";
 
 export const serverRequest = async (
   method: "post" | "get",
@@ -139,3 +153,29 @@ export const generateSearchSuggestions = (products: Product[]): Suggestion[] => 
 
   return result;
 };
+
+
+export const generateOrderID = (length: number = 4): string => {
+  const segment = () => randomString(length).toUpperCase();
+  return `${segment()}-${segment()}-${segment()}`;
+};
+
+
+export const capFirstLetter = (name: string) : string => {
+  return name.slice(0, 1).toUpperCase() + name.slice(1).toLowerCase();
+}
+
+export const getStatusColor = (status: string) => {
+  switch (status.toLowerCase()) {
+    case "processing":
+      return "var(--processing-color)";
+    case "completed":
+      return "var(--completed-color)";
+    case "cancelled":
+      return "var(--cancelled-color)";
+    case "refunded":
+      return "var(--refunded-color)";
+    default:
+      return "var(--default-color)";
+  }
+}

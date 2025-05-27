@@ -1,0 +1,13 @@
+.desktop_order_details_container{
+    padding: var(--desktop-padding);
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    column-gap: 10px;
+}
+
+@media (min-width: 767px) and (max-width: 1024px) {
+    .desktop_order_details_container{
+        grid-template-columns: repeat(1, 1fr);
+    }
+    
+}

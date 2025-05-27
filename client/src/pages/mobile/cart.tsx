@@ -38,7 +38,9 @@ const MobileCart: React.FC<{data: CartProp[]}> = ({ data }) => {
       const filtered = selectedCart.filter((sc) => sc.id !== currentCard.id);
       setSelectedCart(filtered);
     }else{
-      setSelectedCart([...selectedCart, currentCard])
+      const find = cart.find((p) => p.id === currentCard.id);
+      if(!find) return;
+      setSelectedCart([...selectedCart, find])
     }
   }
 

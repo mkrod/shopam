@@ -11,7 +11,7 @@ import { useNavigate, useOutletContext } from 'react-router';
 const SignIn : React.FC = () : React.JSX.Element => {
 
   const navigate=useNavigate();
-  const { setNote } = useGlobalProvider()
+  const { setNote, setUserChanged } = useGlobalProvider()
   const { setMeta } = useOutletContext<AuthContext>();
   useEffect(() => setMeta({text: "Login to your account", switchText: "Don't have an account?", switchLinkText: "signup", switchLink: "/auth/signup"}), [])
 
@@ -47,9 +47,10 @@ const SignIn : React.FC = () : React.JSX.Element => {
       return setTimeout(()=>setNote(undefined),2000);
     }
     
-    setNote({type: "success", title: "Success", body: "Log in successful"});
+    setNote({type: "success", title: "Success", body: "Log in successful please wait..."});
     setIsSubmitting(false);
-    navigate("/");
+    setUserChanged(true);
+    setTimeout(() => window.location.href = "/", 2000);
     return setTimeout(()=>setNote(undefined),5000);
 
 

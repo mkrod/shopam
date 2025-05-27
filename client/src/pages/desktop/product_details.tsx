@@ -422,11 +422,7 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                     </button>}
                     <button onClick={() => navigate(returnUrl({
                         goto: "/checkout",
-                        params: {
-                            mode: "single",
-                            id: product ? product.id : "",
-                        }
-                    }))} disabled={cantProceed} className="desktop_view_product_first_section_right_buy">Buy now</button>
+                    }), {state: [{id, qty, variant}]})} disabled={cantProceed} className="desktop_view_product_first_section_right_buy">Buy now</button>
                     <button className="desktop_view_product_first_section_right_share" onClick={() => {
                         
                         if (navigator.share) {
@@ -504,27 +500,27 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                     <div className="desktop_view_product_review_section_content_right_rates_breakdown_container">
                         <div className="desktop_view_product_review_section_content_right_rates_progress_container">
                              <h6 style={{color: "var(--text-fade)"}}>5</h6>
-                             <progress value={(ratingBreakdown[5] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
+                             <progress value={Number(ratingBreakdown[5] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
                              <h5 className='desktop_view_product_review_section_content_right_rate'>{ratingBreakdown[5]}</h5>
                         </div>
                         <div className="desktop_view_product_review_section_content_right_rates_progress_container">
                              <h6 style={{color: "var(--text-fade)"}}>4</h6>
-                             <progress value={(ratingBreakdown[4] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
+                             <progress value={Number(ratingBreakdown[4] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
                              <h5 className='desktop_view_product_review_section_content_right_rate'>{ratingBreakdown[4]}</h5>
                         </div>
                         <div className="desktop_view_product_review_section_content_right_rates_progress_container">
                              <h6 style={{color: "var(--text-fade)"}}>3</h6>
-                             <progress value={(ratingBreakdown[3] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
+                             <progress value={Number(ratingBreakdown[3] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
                              <h5 className='desktop_view_product_review_section_content_right_rate'>{ratingBreakdown[3]}</h5>
                         </div>
                         <div className="desktop_view_product_review_section_content_right_rates_progress_container">
                              <h6 style={{color: "var(--text-fade)"}}>2</h6>
-                             <progress value={(ratingBreakdown[2] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
+                             <progress value={Number(ratingBreakdown[2] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
                              <h5 className='desktop_view_product_review_section_content_right_rate'>{ratingBreakdown[2]}</h5>
                         </div>
                         <div className="desktop_view_product_review_section_content_right_rates_progress_container">
                              <h6 style={{color: "var(--text-fade)"}}>1</h6>
-                             <progress value={(ratingBreakdown[1] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
+                             <progress value={Number(ratingBreakdown[1] / TotalRating)  * 100} max={100} className='desktop_view_product_review_section_content_right_rates_progress'  />
                              <h5 className='desktop_view_product_review_section_content_right_rate'>{ratingBreakdown[1]}</h5>
                         </div>
                     </div>

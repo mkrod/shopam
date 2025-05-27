@@ -16,6 +16,8 @@ import NotFound from './components/404';
 import AuthLayout from './layouts/authLayout';
 import SignUp from './pages/signup';
 import SignIn from './pages/signin';
+import Orders from './pages/orders';
+import OrderDetails from './pages/order_details';
 
 const App : React.FC = () : React.JSX.Element => {
   const router = createBrowserRouter(
@@ -29,9 +31,10 @@ const App : React.FC = () : React.JSX.Element => {
           <Route path='product/:id/*' element={<ProductPage />} /> 
           <Route path='category/:name/:id/*' element={<Category  />} />
           <Route path='cart' element={<Cart />} />
-          <Route path='checkout/:mode/:id?/*' element={<Checkout />} />
+          <Route path='checkout' element={<Checkout />} />
           <Route path='search/:query/:type/*' element={<Search />}/>
-          
+          <Route path='orders' element={<Orders />} />
+          <Route path='orders/details/:order_id' element={<OrderDetails />} />
           
           <Route path='*' element={<NotFound />} />
         </Route>

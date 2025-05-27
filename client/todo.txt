@@ -2,3 +2,12 @@ noticable
 1. cart (CRUD)
 2. wishlist (CRUD)
 3.in cart, if item is outofstock it shouldnt be markable.
+Done//^
+
+
+///next
+extra fee logic + computation in checkout
+maybe each item will have extra fee in the metadata, like:-
+1, where can this product be delivered and how much can deliver it
+2, tax, on the product, if any.
+3, other fees

@@ -1,0 +1,32 @@
+.mobile_me_container{
+    display: flex;
+    flex-direction: column;
+    padding: var(--y) var(--x);
+    min-height: 100vh;
+}
+
+@media (min-width: 768px) {
+    .mobile_me_container{
+        padding: var(--desktop-padding);
+        display: flex;
+        flex-direction: row;
+        justify-content: center;
+    }
+
+    .mobile_me_form_container{
+        width: 500px;
+    }
+}
+
+.mobile_me_avatar_container{
+    height: 200px;
+    margin-top: 20px;
+}
+
+.mobile_me_avatar_content{
+    overflow-x: auto;
+}
+
+.mobile_me_form_hd_text{
+    margin-bottom: 30px;
+}

@@ -35,7 +35,9 @@ const DesktopCart : React.FC<{data: CartProp[]}> = ({ data })  : React.JSX.Eleme
         const filtered = selectedCart.filter((sc) => sc.id !== currentCard.id);
         setSelectedCart(filtered);
       }else{
-        setSelectedCart([...selectedCart, currentCard])
+        const find = cart.find((p) => p.id === currentCard.id);
+        if(!find) return;
+        setSelectedCart([...selectedCart, find])
       }
     }
   
@@ -64,7 +66,7 @@ const DesktopCart : React.FC<{data: CartProp[]}> = ({ data })  : React.JSX.Eleme
             ))}
             {data.length < 1 && <div className="mobile_saved_no_content">
                 <TbShoppingCartDollar size={35} />
-                <h4>No Saved item</h4>
+                <h4>No Cart item</h4>
             </div>}
         </div>
         <div className="desktop_cart_checkout_container">

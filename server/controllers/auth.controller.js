@@ -9,13 +9,22 @@ const Auth = (req, res) => {
 
 const createUser  = async (req, res) => {
     const { data } = req.body;
+
+    const [check] = await db.execute("SELECT * FROM users WHERE email = ? ", [data.email]);
+    if(check.length > 0){
+        return res.json(success("User already exist"));
+    }
+
+
+
+
     const hashedPassword = await hash(data.password);
     const emailName  = data.email.split("@");
     const newUserID = `${emailName[0].slice(0, 2)}-${generateRandomString(10)}-${emailName[0].slice(-2)}`;
     const date = new Date().toISOString();
     const [query] = await db.execute("INSERT INTO users (user_id, email, user_data, password, joined) VALUES (?, ?, ?, ?, ?)", [newUserID, data.email, "{}", hashedPassword, date]);
     if(query.affectedRows > 0){
-        console.log("registered");
+       
         req.session.isLoggedIn = true;
         req.session.email = data.email;
         req.session.user_id = newUserID;
@@ -33,7 +42,6 @@ const localAuth = async (req, res) => {
         const password = result[0].password;
         const isValid = await verify(password, data.password);
         if(isValid){
-            console.log("authenticated");
             req.session.isLoggedIn = true;
             req.session.email = data.email;
             req.session.user_id = result[0].user_id;
@@ -80,10 +88,16 @@ const userData = async (req, res) => {
     }
 }
 
+const logout = async (req, res) => {
+    req.session.destroy();
+    res.json(success("success"));
+}
+
 module.exports = {
     Auth,
     createUser,
     localAuth,
     googleCallback,
     userData,
+    logout
 };

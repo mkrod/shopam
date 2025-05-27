@@ -1,4 +1,4 @@
-import { appLogoUri, appName, defaultUserDp, returnUrl } from '@/constants'
+import { appLogoUri, appName, returnUrl } from '@/constants'
 import React, { useState } from 'react'
 import "./css/desktop_tab.css";
 import SearchBox from '@/components/search_box';
@@ -15,6 +15,8 @@ import { MdCancel } from 'react-icons/md';
 import { IoSearch } from 'react-icons/io5';
 import SearchSuggestion from '../search_suggestion';
 import { logout } from '@/constants/auth';
+import { Response } from '@/constants/api';
+import Avatar from '../avatar';
 //import { compareTwoStrings } from 'string-similarity';
 
 
@@ -134,14 +136,14 @@ const DeskTopTabNavBar : React.FC = () : React.JSX.Element => {
         </div>
         <div className="desktop_navbar_right_option_container" style={{marginLeft: 20}}>
           <div onClick={() => setOpenMenu(!openMenu)} className={`desktop_navbar_right_picture_menu_container ${openMenu && "menu_triggered"}`}>
-            <img className='user_profile_picture' src={defaultUserDp}  alt={`username dp`} />
+            <Avatar name={user.email || "User"} size={30} />
           </div>
         </div>
         
         <div className={`desktop_me_options_container ${openMenu && "desktop_me_options_container_open"}`}>
           <div className="desktop_me_profile_container">
             <div className="desktop_me_profile_picture_container">
-              <img className='desktop_me_profile_picture' src={defaultUserDp}  alt={`username dp`} />
+               <Avatar name={user.email || "User"} size={30} />
             </div>
             <div className="desktop_me_profile_name_email">
               <span className='desktop_me_profile_name'>{ user.user_data.name ? user.user_data.name?.first + " " + user.user_data.name?.last : user.user_id }</span>
@@ -154,19 +156,38 @@ const DeskTopTabNavBar : React.FC = () : React.JSX.Element => {
           </div>
 
           <div className="desktop_me_options">
-            <div className="desktop_me_option_container">
+            <div onClick={() => {
+              if(!user || !user.email){
+                return navigate("/auth/signin");
+              }
+              navigate("/profile");
+              setOpenMenu(false);
+              }} className="desktop_me_option_container">
               <div className="desktop_me_option_left">
                 <FaGear />
               </div>
               <div className="desktop_me_option_right">Manage Account</div>
             </div>
-            <div className="desktop_me_option_container">
+            <div onClick={() => {
+              if(!user || !user.email){
+                return navigate("/auth/signin");
+              }
+              navigate("/orders");
+              setOpenMenu(false);
+            }} className="desktop_me_option_container">
               <div className="desktop_me_option_left">
                 <FiShoppingBag />
               </div>
               <div className="desktop_me_option_right">My orders</div>
             </div>
-            {(user && user.email !== "") && <div  onClick={logout} className="desktop_me_option_container">
+            {(user && user.email !== "") && <div  onClick={() => {
+              logout()
+              .then((res: Response) => {
+                if(res.message === "success"){
+                  window.location.reload();
+                }
+              })
+              }} className="desktop_me_option_container">
               <div className="desktop_me_option_left">
                 <HiOutlineLogout />
               </div>

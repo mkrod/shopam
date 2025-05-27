@@ -1,6 +1,6 @@
-import { CartProp, Category, DesktopBannerProp, HomeBanner, Product } from "@/constants/provider";
-import axios from "axios";
+import { CartProp, Category, DesktopBannerProp, HomeBanner, OrderList, Product } from "@/constants/provider";
 import { serverRequest } from ".";
+import { PaymentMethod } from "@/pages/desktop/checkout";
 
 export interface Response {
     status: number;
@@ -10,100 +10,13 @@ export interface Response {
 export const getCategories = async () : Promise<Category[] | undefined> => { 
 
     //logic to fetch categories here
-    return [
-      {
-        "id": "BEA-6",
-        "name": "beauty"
-      },
-      {
-        "id": "FRA-10",
-        "name": "fragrances"
-      },
-      {
-        "id": "FUR-9",
-        "name": "furniture"
-      },
-      {
-        "id": "GRO-9",
-        "name": "groceries"
-      },
-      {
-        "id": "HOM-15",
-        "name": "home-decoration"
-      },
-      {
-        "id": "KIT-19",
-        "name": "kitchen-accessories"
-      },
-      {
-        "id": "LAP-7",
-        "name": "laptops"
-      },
-      {
-        "id": "MEN-11",
-        "name": "mens-shirts"
-      },
-      {
-        "id": "MEN-10",
-        "name": "mens-shoes"
-      },
-      {
-        "id": "MEN-12",
-        "name": "mens-watches"
-      },
-      {
-        "id": "MOB-18",
-        "name": "mobile-accessories"
-      },
-      {
-        "id": "MOT-10",
-        "name": "motorcycle"
-      },
-      {
-        "id": "SKI-9",
-        "name": "skin-care"
-      },
-      {
-        "id": "SMA-11",
-        "name": "smartphones"
-      },
-      {
-        "id": "SPO-18",
-        "name": "sports-accessories"
-      },
-      {
-        "id": "SUN-10",
-        "name": "sunglasses"
-      },
-      {
-        "id": "TAB-7",
-        "name": "tablets"
-      },
-      {
-        "id": "TOP-4",
-        "name": "tops"
-      },
-      {
-        "id": "VEH-7",
-        "name": "vehicle"
-      },
-      {
-        "id": "WOM-11",
-        "name": "womens-bags"
-      },
-      {
-        "id": "WOM-14",
-        "name": "womens-dresses"
-      },
-      {
-        "id": "WOM-16",
-        "name": "womens-jewellery"
-      },
-      {
-        "id": "WOM-12",
-        "name": "womens-shoes"
-      }
-    ]
+    const response = await serverRequest("get", "categories");
+    console.log(response);
+    if(response.message !== "success") return [];
+    const category : Category[] = response.data;
+    console.log(category);
+    if(response.status < 200 || response.status >= 300) return [];
+    return category;
 }
 
 ///
@@ -130,30 +43,23 @@ export const getHomeBanner = async () : Promise<HomeBanner[] | undefined> => {
 }
 
 export const getProducts = async () : Promise<Product[] | undefined> => {
-    //mine
-    /*const response = await axios.get("/products.json");
-    if(response.data.message !== "success") return [];
-    const products : Product[] = response.data.data;
+    ///mine
+    const response = await serverRequest("get", "products");
+    if(response.message !== "success") return [];
+    const products : Product[] = response.data;
     if(response.status < 200 || response.status >= 300) return [];
-    return products;*/
-
-    //external api
-    const response = await axios.get("https://dummyjson.com/products?limit=0");
-    if(response.data.products < 1) return [];
-    const products : Product[] = response.data.products.map(convertToProductFormat);
-    if(response.status < 200 || response.status >= 300) return [];
-
     return products;
 }
 
 //////////////////
-
+/*
 function convertToProductFormat(raw: any): Product {
     const randomDate = new Date(Date.now() - Math.floor(Math.random() * 1e10)).toISOString();
-    const currentPrice = raw.price;
+    const currentPrice = Number((raw.price * 1654).toFixed(2));
     const discount = raw.discountPercentage || 0;
-    const prevPrice = +(currentPrice / (1 - discount / 100)).toFixed(2);
-  
+    const prevPrice = Number((currentPrice + (currentPrice * discount) / 100).toFixed(2));
+    const currency = JSON.parse(localStorage.getItem("currency") || "{}").symbol || "₦";
+
     const reviews = raw.reviews?.map((r: any, index: number) => ({
       id: `${raw.id}-${index + 1}`,
       rating: r.rating,
@@ -179,7 +85,7 @@ function convertToProductFormat(raw: any): Product {
       ],
       created_at: randomDate,
       price: {
-        currency: "USD",
+        currency: currency,
         current: currentPrice,
         prev: prevPrice
       },
@@ -204,13 +110,20 @@ function convertToProductFormat(raw: any): Product {
         startDate: randomDate,
         endDate: new Date(Date.now() + 1000 * 60 * 60 * 24 * 7).toISOString() // 7 days after
       } : undefined,
-      brand: raw.brand
+      brand: raw.brand,
+      variant: raw.variants||{
+        color: ["black", "white", "red", "blue"],
+        size: ["small", "medium", "large"],
+        material: ["stock", "cotton", "leather"],
+        pattern: ["plain", "striped", "polka-dot"],
+      },
+      manufacturer: "shopamofficial"
     };
   }
   
 
 
-
+*/
 
 
 
@@ -306,3 +219,21 @@ export const removeWishItem = async (data: {id: string}) : Promise<Response> => 
   return result;
 }
 
+
+export const intiatePayment = async (method: PaymentMethod, data?: Record<string, any>) : Promise<Response> => {
+
+  const response : Response = await serverRequest("post", `pay/${method}`, data, "json");
+  return response;
+}
+
+
+export const getOrderList = async ()  : Promise<OrderList[]> => {
+   const response : Response = await serverRequest("get", "user/orders/list")
+  const data : OrderList[] = response.data.map((item: any) => ({
+     ...item,
+     data: JSON.parse(item.data)
+  }));
+
+
+   return data;
+}

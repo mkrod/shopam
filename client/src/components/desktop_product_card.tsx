@@ -22,7 +22,7 @@ const DesktopProductCard : React.FC<{data: Product}> = ({ data }) : React.JSX.El
 
 
       /////
-      const { setNote, setCartChanged, cart, user } = useGlobalProvider()
+      const { setNote, setCartChanged, cart, user, currency } = useGlobalProvider()
           //const [variant, setVariant] = useState<{size: string, color: string}>({size: "", color: ""});
           const [qty, setQty] = useState<number>(1);
       
@@ -132,8 +132,8 @@ const DesktopProductCard : React.FC<{data: Product}> = ({ data }) : React.JSX.El
                 <span className='desktop_product_card_metadata_title'>{title}</span>
             </div>
             <div className="desktop_product_card_price_container">
-                <span className='desktop_product_card_current_price'>{data.price.currency + " " + formatNumberWithCommas(data.price.current)}</span>
-                {data.price.prev && <span className='desktop_product_card_prev_price'>{data.price.currency + " " + formatNumberWithCommas(data.price.prev)}</span>}
+                <span className='desktop_product_card_current_price'>{currency.symbol + " " + formatNumberWithCommas(data.price.current)}</span>
+                {data.price.prev && <span className='desktop_product_card_prev_price'>{currency.symbol + " " + formatNumberWithCommas(data.price.prev)}</span>}
             </div>
             <div className="desktop_product_card_ratings_container">
 

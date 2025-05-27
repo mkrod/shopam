@@ -31,8 +31,9 @@ export const fbAuth = () => {}
 
 export const appleAuth = () => {}
 
-export const logout = () => {
-    
+export const logout = async () : Promise<Response> => {
+    const response : Response = await serverRequest("get", "auth/logout/");
+    return response;
 }
 
 export const isEmailValid = (email: string): boolean => {

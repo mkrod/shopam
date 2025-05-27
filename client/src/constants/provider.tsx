@@ -1,5 +1,5 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { ExtractDesktopBannerData, getCartItems, getCategories, getFeaturedPost, getHomeBanner, getProducts, getSavedItem } from './api';
+import { ExtractDesktopBannerData, getCartItems, getCategories, getFeaturedPost, getHomeBanner, getOrderList, getProducts, getSavedItem } from './api';
 import { generateSearchSuggestions } from '.';
 import { getUserData } from './auth';
 
@@ -68,9 +68,9 @@ export interface Product {
     sku: string; // unique identifier for inventory tracking
     tags?: string[]; // list of product tags or keywords for searching/filtering
     dimensions?: {
-        length: number; // in cm
-        width: number; // in cm
-        height: number; // in cm
+        length?: number; // in cm
+        width?: number; // in cm
+        height?: number; // in cm
     };
     weight?: number; // in kg
     discount?: {
@@ -90,7 +90,6 @@ export interface Product {
     };
     location?: string;
     brand?: string; // brand name
-    manufacturer?: string; // manufacturer name
 }
 
 export interface DesktopBannerProp {
@@ -109,8 +108,46 @@ export interface User {
                     last?: string
                 };
                 address?: string;
+                contact?: string;
         };
 }
+
+export interface Orders {
+  id: string;
+  order_item_id: string;
+  title: Product['title'];
+  desc: Product['description'];
+  images?: Product['gallery'];
+  price: Product['price'];
+  qty:  string | number;
+  variant?: {
+    size?: string;
+    color?:  string; 
+  };
+  status?: string;
+}
+
+export interface OrderList extends User { 
+    user_id: string;
+    email: string;
+    order_id: string;
+    reference: string;
+    data: {
+        order_id: string;
+        amounts: string | number;
+        orders: Orders[] 
+    }
+    payment_status: string;
+    status: string;
+    created_at: string | Date;
+    payment_method: string;
+    others:{
+        bills: Record<string, any>, 
+        note: string;
+    }
+}
+
+export type Currency = { name: "USD", symbol: "$" } | { name: "NGN", symbol: "₦" } | { name: "EUR", symbol: "€" };
 
 interface GlobalContext {
     note: Note | undefined;
@@ -121,6 +158,7 @@ interface GlobalContext {
     categories: Category[] | undefined;
     homeBanner: HomeBanner[] | undefined;
     desktopBanner: DesktopBannerProp[] | undefined;
+    currency: Currency;
     products: Product[] | undefined;
     featuredPost: Product[] | undefined;
     cart: CartProp[];
@@ -129,7 +167,8 @@ interface GlobalContext {
     setWishChanged: React.Dispatch<React.SetStateAction<boolean>>;
     hotSearch: Suggestion[];
     user: User;
-    //setUser: React.Dispatch<React.SetStateAction<User>>;
+    setUserChanged: React.Dispatch<React.SetStateAction<boolean>>;
+    orderList: OrderList[];
 }
 
 interface Display {
@@ -162,6 +201,31 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
         setTimeout(() => setLoading(false), 2000);
         return () => window.removeEventListener("resize", configDisplay);
     }, []);
+
+        //// auth
+    
+        const [user, setUser] =  useState<User>({email: "", user_data: {}, user_id: ""});
+        const [userChanged, setUserChanged] = useState<boolean>(true);
+        useEffect(() => {
+            if(!userChanged) return;
+            getUserData()
+            .then((res: User | undefined) => {
+                if(!res) return;
+                setUser(res)
+            })
+            .catch((err) => console.log("Cannot get userData ", err))
+            .finally(() => setUserChanged(false));
+        }, [userChanged]);
+
+    // currency
+    const [currency, setCurrency] = useState<Currency>({ name: "NGN", symbol: "₦" });
+    useEffect(() => {
+        const currency = localStorage.getItem("choosen_currency");
+        if(!currency) return;
+        const parsed : Currency = JSON.parse(currency);
+        setCurrency(parsed);
+    }, [])
+
 
     ///////////// all products ////////
     const [products, setProducts] = useState<Product[] | undefined>([]);
@@ -264,19 +328,18 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
         setHotsearch(sugguestion);
     }, [products]);
 
-    //// auth
-    
-    const [user, setUser] =  useState<User>(
-        {email: "", user_data: {}, user_id: ""});
+
+    /// get all orders
+    const [orderList, setOrderList] = useState<OrderList[]>([]);
     useEffect(() => {
-        getUserData()
-        .then((res: User | undefined) => {
-            if(!res) return;
-            setUser(res)
+        if(!user.email) return;
+        getOrderList()
+        .then((list: OrderList[]) => {
+            setOrderList(list);
         })
-        .catch((err) => console.log("Cannot get userData ", err))
-        .finally(() => {});
-    }, []);
+        .catch((err) => console.log("Error fetching orderList: ", err))
+    }, [user.email]);
+
 
 
     return (
@@ -288,7 +351,8 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
             display, 
             categories, 
             homeBanner, 
-            desktopBanner, 
+            desktopBanner,
+            currency,
             products, 
             featuredPost, 
             cart, 
@@ -296,7 +360,9 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
             saved,
             setWishChanged,
             hotSearch,
-            user
+            user,
+            setUserChanged,
+            orderList
             }}>
             {children}
         </GlobalContext.Provider>

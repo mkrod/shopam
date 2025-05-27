@@ -1,0 +1,83 @@
+.mobile_order_card_list_container{
+    display: flex;
+    flex-direction: column;
+    padding: var(--y);
+    border: 0.5px solid var(--background-fade);
+    border-radius: 5px;
+    margin-bottom: 10px;
+    height: fit-content;
+}
+.mobile_order_card_list_item_container{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 20px;
+    min-height: 50px;
+    margin-bottom: 10px;
+}
+.mobile_order_card_list_item_show_image_container{
+    overflow: hidden;
+    height: 60px;
+    width: 70px;
+    display: flex;
+    flex-direction: row;
+    justify-content: center;
+    align-items: center;
+    position: relative;
+}
+
+.mobile_order_card_list_item_image{
+    height: 100%;
+    max-height: 60px;
+    max-width: 60px;
+}
+
+.mobile_order_card_list_item_metadata_container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mobile_order_card_list_order_metadata_container{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+}
+
+.mobile_order_card_list_order_metadata{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+.mobile_order_card_list_order_metadata_label{
+    font-size: var(--normal-font);
+    font-weight: bolder;
+    color: var(--text-fade);
+    
+}
+
+.mobile_order_card_list_order_metadata_value{
+    user-select: all;
+    --webkit-user-select: all;
+    --moz-user-select: all;
+    --ms-user-select: all;
+    --o-user-select: all;
+    --khtml-user-select: all;
+    --user-select: all;
+    -webkit-touch-callout: all;
+    -webkit-user-drag: all;
+    -khtml-user-drag: all;
+    -moz-user-drag: all;
+    -ms-user-drag: all;
+    -o-user-drag: all;  
+}
+
+.mobile_order_card_list_order_metadata_value.value_status{
+    color: white;
+    padding: 3px 5px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}

@@ -1,6 +1,6 @@
 import { AuthContext } from '@/layouts/authLayout';
 import React, { useEffect, useState } from 'react'
-import { useNavigate, useOutletContext } from 'react-router'
+import { useOutletContext } from 'react-router'
 import "./css/auth.css";
 import { HiEnvelope } from 'react-icons/hi2';
 import { AiFillEye, AiFillEyeInvisible } from 'react-icons/ai';
@@ -11,9 +11,9 @@ import { isEmailValid, isValidPassWord, registerUser } from '@/constants/auth';
 
 const SignUp : React.FC = () : React.JSX.Element => {
 
-  const navigate = useNavigate();
+  
   const { setMeta } = useOutletContext<AuthContext>();
-  const { setNote } = useGlobalProvider();
+  const { setNote, setUserChanged } = useGlobalProvider();
   useEffect(() => setMeta({text: "Create new account", switchText: "Already have an account?", switchLinkText: "Signin", switchLink: "/auth/signin"}), []);
   interface Form {
     email: string;
@@ -47,10 +47,11 @@ const SignUp : React.FC = () : React.JSX.Element => {
       return setTimeout(()=>setNote(undefined),2000);
     }
     
-    setNote({type: "success", title: "Success", body: "Log in successful"});
+    setNote({type: "success", title: "Success", body: "Log in successful please wait..."});
     setIsSubmitting(false);
-    navigate("/");
-    return setTimeout(()=>setNote(undefined),2000);
+    setUserChanged(true);
+    setTimeout(() => window.location.href = "/", 2000);
+    return setTimeout(()=>setNote(undefined),5000);
 
   };
 

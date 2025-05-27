@@ -176,14 +176,7 @@ const DesktopHomePage : React.FC = () : React.JSX.Element => {
 
 
 
-        <div className="home_newsletter_section_container">
-            <h1 className="home_newsletter_head_text">Subscribe for newsletter</h1>
-            <div className="home_newsletter_sub_text">Enter your email if you'll like to get updates on new products, offers, event, and more...</div>
-            <div className="home_newsletter_input_container">
-                <input type="text" name=""placeholder='Enter your email' className="home_newsletter_input" />
-                <button className='home_newsletter_button'>Subscribe</button>
-            </div>
-        </div>
+
 
 
     </div>

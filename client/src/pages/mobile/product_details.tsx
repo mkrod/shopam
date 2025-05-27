@@ -479,11 +479,7 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
           <button
            onClick={() => navigate(returnUrl({
                 goto: "/checkout",
-                params: {
-                    mode: "single",
-                    id: product ? product.id : "",
-                }
-            }))}
+            }), {state: [{id, qty, variant}]})}
           disabled={cantProceed} className='mobile_view_product_buy_button'>
              <RiShoppingBagLine />
              Buy Now

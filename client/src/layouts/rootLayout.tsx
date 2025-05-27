@@ -7,10 +7,11 @@ import { IoMdCheckmarkCircleOutline } from 'react-icons/io';
 //import Footer from '@/components/footer';
 import SearchBox from '@/components/search_box';
 import SearchSuggestion from '@/components/search_suggestion';
-import { returnUrl } from '@/constants';
+import { returnUrl, serverRequest } from '@/constants';
+import { Response } from '@/constants/api';
 
 const RootLayout : React.FC = () : React.JSX.Element => {
-  const { note, loading, display, hotSearch, setLoading } = useGlobalProvider();
+  const { note, setNote, loading, display, hotSearch, setLoading } = useGlobalProvider();
   const navigate = useNavigate();
   const { pathname } = useLocation();
   useEffect(() => {
@@ -63,6 +64,16 @@ const RootLayout : React.FC = () : React.JSX.Element => {
       setFilteredSuggestion(uniqueFiltered);
     };
 
+    useEffect(() => {
+      serverRequest("get", "notify")
+        .then((data: Response) => {
+          if(Object.values(data).length < 1) return;
+          console.log(data)
+          setNote({type:data.message as "success"|"error",title:data.data.title||"Failed",body:data.data.text});
+          setTimeout(() => setNote(undefined),5000);
+        });
+    }, []);
+    
 
 
     //
@@ -80,7 +91,7 @@ const RootLayout : React.FC = () : React.JSX.Element => {
           {note && note.body && <span className='root_layout_popup_modal_message'>{note.body}</span>}
         </div>
        </div>
-        <div style={{paddingTop: "var(--bar-height)"}}>
+        <div style={{paddingTop: !pathname.includes("/auth") ? "var(--bar-height)" : ""}}>
           <Outlet />
         </div>
 

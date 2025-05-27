@@ -16,9 +16,14 @@
   -moz-osx-font-smoothing: grayscale;
 
   --background-fade: #0000009d;
-  --accent: #f84913;
+  --accent: #13a4f8; /*f84913 (original orange)  13b7f8 (blue)*/
   --accent-sec: #fa5a2a;
   --accent-fade: #f8491369;
+  --processing-color: #f8b213;
+  --cancelled-color: #fa2a2a;
+  --completed-color: #04b304;
+  --refunded-color: #4652ff;
+  --default-color: #242424;
   --smaller-font: 8px;
   --small-font: 10px;
   --normal-font: 12px;
