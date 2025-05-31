@@ -33,6 +33,8 @@ const redisClient = redis.createClient({ url: process.env.REDIS_URL });
 redisClient.on("error", (err) => console.error("Redis error:", err));
 redisClient.connect().then(() => console.log("✅ Connected to Redis"));
 
+
+
 const corsOptions = {
   origin: function (origin, callback) {
     const allowedOrigins = [
@@ -66,7 +68,7 @@ const secret = process.env.SESSION_SECRET || "session_secret_random";
 
 app.use(
   session({
-    store: new RedisStore({ client: redisClient }),
+    store: new RedisStore({ client: redisClient, prefix: 'app1:sess:' }),
     name: "_shop_am-session-id_",
     secret: secret,
     resave: false,

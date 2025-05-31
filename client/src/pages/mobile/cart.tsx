@@ -63,7 +63,14 @@ const MobileCart: React.FC<{data: CartProp[]}> = ({ data }) => {
   return (
     <div className='mobile_view_card_component_container'>
         {data.length > 0 && data.map((cart: CartProp, index: number) => (
-            <CartCard allSelected={allselected} setAllSelected={(value) => setAllSelected(value)} onSelect={handleTotal} key={index} data={cart}  />
+            <CartCard 
+             allSelected={allselected}
+             setAllSelected={(value) => setAllSelected(value)} 
+             onSelect={handleTotal} 
+             key={index} 
+             data={cart}  
+             removeSelected={(id) => setSelectedCart(selectedCart.filter((s)=>s.id!==id))}
+            />
         ))}
 
         {data.length < 1 && <div className="mobile_saved_no_content">

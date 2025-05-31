@@ -33,7 +33,13 @@ export type Suggestion = {
     text: string;
   };
   
-
+  export interface DL {
+    id: string; // unique identifier for the delivery location
+    state: string; // state or region of the delivery location
+    lga: string; // Local Government Area (LGA) of the delivery location
+    fee: number; // delivery fee for this location
+    estimatedTime: string; // estimated delivery time for this location
+}
 export interface Product {
     id: string; // product id
     title: string; // product title
@@ -88,8 +94,25 @@ export interface Product {
         size?: string [];
         color?: string[];
     };
+    return?: {
+        active:  boolean;
+        policy: string;
+    }
+    canPickup?: boolean; // whether the product can be picked up from the store
+    canDeliver?: boolean; // whether the product can be delivered
+    pickupLocation?: string; // location where the product can be picked up //if not specified, it defaults to the store address
+    nationalDelivery?: boolean; // whether the product can be delivered nationally
+    deliveryLocation?: DL[]; // locations where the product can be delivered
+    pickupFee?: number; // fee for picking up the product
+    deliveryFee?: number; // fee for delivering the product (nationwide mode)
+    pickupTime?: string; // estimated time for pickup (nationwide mode)
+    deliveryTime?: string; // estimated time for delivery
     location?: string;
+    paymentMethods?: string[]; // list of payment methods accepted for this product
     brand?: string; // brand name
+    vendor_id?: string; // id of the vendor
+    vendor_name?: string; // name of the vendor
+
 }
 
 export interface DesktopBannerProp {
@@ -125,6 +148,7 @@ export interface Orders {
     color?:  string; 
   };
   status?: string;
+  updated_at?: string | Date;
 }
 
 export interface OrderList extends User { 
@@ -140,6 +164,7 @@ export interface OrderList extends User {
     payment_status: string;
     status: string;
     created_at: string | Date;
+    updated_at: string | Date;
     payment_method: string;
     others:{
         bills: Record<string, any>, 

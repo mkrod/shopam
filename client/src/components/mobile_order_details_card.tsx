@@ -35,6 +35,10 @@ const MobileOrderDetailsCard : React.FC<Prop> = ({data}) : React.JSX.Element => 
                     <span className='mobile_order_card_list_order_metadata_label'>Order ID</span>
                     <h5 className='mobile_order_card_list_order_metadata_value'>#{data.order_item_id}</h5>
                 </div>
+                <div className="mobile_order_card_list_order_metadata">
+                    <span className='mobile_order_card_list_order_metadata_label'>Updated</span>
+                    <h5>{new Date(data.updated_at||new Date()).toLocaleString('en-US', { day: '2-digit', month: 'short', year: 'numeric', hour: 'numeric', minute: '2-digit', hour12: true }).replace(',', '')}</h5>
+                </div>
                 
                 <div className="mobile_order_card_list_order_metadata">
                     <span className='mobile_order_card_list_order_metadata_label'>Total Items</span>

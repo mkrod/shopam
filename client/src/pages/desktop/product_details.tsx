@@ -1,5 +1,5 @@
 import ActivityIndicator from '@/components/activity_indicator';
-import { appName, formatNumberWithCommas, returnUrl } from '@/constants';
+import { appName, formatDeliveryDate, formatNumberWithCommas, returnUrl } from '@/constants';
 import { CartProp, Product, useGlobalProvider } from '@/constants/provider'
 import React, { useEffect, useState } from 'react'
 import { Rating } from 'react-simple-star-rating';
@@ -9,13 +9,15 @@ import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { FaCaretLeft, FaCaretRight, FaHeart, FaMinus, FaPlus, FaRegHeart } from 'react-icons/fa6';
 import DesktopProductCard from '@/components/desktop_product_card';
 import usePagination from '@/constants/usePagination';
-import { IoMdShareAlt } from 'react-icons/io';
+import { IoMdList, IoMdShareAlt } from 'react-icons/io';
 import stringSimilarity from "string-similarity";
 import ReviewComponent from '@/components/reviews';
 import Discussion from '@/components/discussion';
 import { addToCart, addToWishList, IncreaseCartItemQty, MinusCartItemQty, removeCartItem, removeWishItem, Response } from '@/constants/api';
 import { useNavigate } from 'react-router';
 import  "./css/product_details.css";
+import { TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
+import { GiCardPickup } from 'react-icons/gi';
 const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JSX.Element => {
 
     
@@ -27,7 +29,7 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
     const [ImageShowing, setImageShowing] = useState(0);
     const [loadingImage, setLoadingImage] = useState<boolean>(true);
     useEffect(() => {
-        if(!products || !id) return;
+        if((!products || products.length === 0) || !id) return;
         const thisProduct = products.find((item: Product) => item.id === id);
         if(!thisProduct) {
             navigate(-1);
@@ -272,6 +274,25 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
 
 
 
+   /// delivery, etc
+   const [deliveryDate, setDeliveryDate] = useState<{delivery?:string;pickup?:string;}>({});
+
+    useEffect(() => {
+    if (!product || !product.deliveryTime) return;
+    let delivery: string | undefined;
+    let pickup: string | undefined;
+
+    if (product.deliveryTime) {
+        delivery = new Date(Date.now() + Number(product.deliveryTime) * 24 * 60 * 60 * 1000).toISOString();
+    }
+    if (product.pickupTime) {
+        pickup = new Date(Date.now() + Number(product.pickupTime) * 24 * 60 * 60 * 1000).toISOString();
+    }
+    setDeliveryDate({ delivery, pickup });
+    }, [product]);
+
+
+
 
 
   return (
@@ -334,7 +355,7 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                 <div className='desktop_view_product_first_section_right_price_save_qty_container'>
                     <div className="desktop_view_product_first_section_right_price_container">
                         <h4 className='desktop_view_product_first_section_right_price'>{product?.price.currency + " " + formatNumberWithCommas(product?.price.current || 0)}</h4>
-                        <span className='desktop_view_product_first_section_right_old_price'>{product?.price.currency + " " + formatNumberWithCommas(product?.price.prev || 0)}</span>
+                        {(product?.price?.prev||0)>0&&<span className='desktop_view_product_first_section_right_old_price'>{product?.price.currency + " " + formatNumberWithCommas(product?.price.prev || 0)}</span>}
                     </div>
 
                     <div className='desktop_view_product_first_section_right_save_container'>
@@ -355,11 +376,11 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                 </div>
                 
 
-                {product && product.variant && product.variant.size && (
+                {product?.variant && (product?.variant?.size||[])?.length>0 && (
                     <div style={{width: "100%"}}>
                         <div className='desktop_view_product_first_section_right_hr'/> 
                         <div className="desktop_view_product_variant_section_container">
-                            {product.variant.size.map((size: string, index: number) => (
+                            {product.variant?.size?.map((size: string, index: number) => (
                                 <span 
                                     key={index} 
                                     onClick={() => setVariant((prev) => ({...prev, size: size}))} 
@@ -372,11 +393,11 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                             </div>
                     </div>
                 )}
-                {product && product.variant && product.variant.color && (
+                {product?.variant && (product?.variant?.color||[])?.length>0 &&  (
                     <div style={{width: "100%"}}>
                         <div className='desktop_view_product_first_section_right_hr'/> 
                         <div className="desktop_view_product_variant_section_container">
-                            {product.variant.color.map((color: string, index: number) => (
+                            {product?.variant?.color?.map((color: string, index: number) => (
                                 <span 
                                     key={index} 
                                     onClick={() => setVariant((prev) => ({...prev, color: color}))} 
@@ -396,13 +417,13 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                     <div className="desktop_view_product_first_section_right_brand_etc_left">
                         <span className='desktop_view_product_first_section_right_brand_etc_label'>Brand</span>
                         {product?.category && <span className='desktop_view_product_first_section_right_brand_etc_label'>Category</span>}
-                        {product?.manufacturer && <span className='desktop_view_product_first_section_right_brand_etc_label'>Manufacturer</span>}
+                        {product?.vendor_name && <span className='desktop_view_product_first_section_right_brand_etc_label'>Seller</span>}
                         {product?.tags && <span className='desktop_view_product_first_section_right_brand_etc_label'>Tags</span>}
                     </div>
                     <div className="desktop_view_product_first_section_right_brand_etc_right">
                         <span className='desktop_view_product_first_section_right_brand_etc_value'>{product?.brand ? product?.brand : "Generic"}</span>
                         {product?.category && <span className='desktop_view_product_first_section_right_brand_etc_value'>{product.category.name}</span>}
-                        {product?.manufacturer && <span className='desktop_view_product_first_section_right_brand_etc_value'>{product.manufacturer}</span>}
+                        {product?.vendor_name && <span className='desktop_view_product_first_section_right_brand_etc_value'>{product.vendor_name}</span>}
                         {product?.tags && <div style={{display: "flex", gap: "5px", alignItems: "center"}} className='desktop_view_product_first_section_right_brand_etc_value'>{product.tags.map((tags: string, index: number) => (<span key={index}>{tags}</span>))}</div>}
                     </div>              
                 </div>
@@ -460,6 +481,40 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
         </div>
 
         <div className='desktop_view_product_first_section_right_hr'/> 
+          <div className="desktop_view_product_delivery_return_container">
+            <div className="desktop_view_product_review_section_header_tab_container">
+                <h4 className="desktop_view_product_review_section_header_tab">Delivery & Returns</h4>
+            </div>
+
+            <div className="desktop_view_product_delivery_return_cards">
+                {product?.canDeliver && product.nationalDelivery && deliveryDate.delivery && <div className="desktop_view_product_delivery_return_card">
+                    <div className="desktop_view_product_delivery_return_card_head">
+                        <TbTruckDelivery size={20} />
+                        <h5>Delivery</h5>
+                    </div>
+                    <span className='desktop_view_product_delivery_return_card_text'>Estimated Delivery {formatDeliveryDate(deliveryDate.delivery)} when you place order within the next 24hours</span>
+                </div>}
+                {product?.canPickup && !product.pickupLocation && deliveryDate.pickup && <div className="desktop_view_product_delivery_return_card">
+                    <div className="desktop_view_product_delivery_return_card_head">
+                        <GiCardPickup size={20} />
+                        <h5>Pickup</h5>
+                    </div>
+                    <span className='desktop_view_product_delivery_return_card_text'>Ready for pickup as at {formatDeliveryDate(deliveryDate.pickup)} if you place your order within the next 24hours</span>
+                </div>}
+                {product?.return?.active && <div className="desktop_view_product_delivery_return_card">
+                    <div className="desktop_view_product_delivery_return_card_head">
+                        <TbTruckReturn size={20} />
+                        <h5>Return Policy</h5>{/*use product.return.policy for the text */}
+                    </div>
+                    <span className='desktop_view_product_delivery_return_card_text'>{product?.return?.policy}</span>
+                </div>}
+            </div>
+
+          </div>
+
+
+        <div className='desktop_view_product_first_section_right_hr'/> 
+          
 
         {/* Review Tab Here*/}
         <div className="desktop_view_product_review_section_container">
@@ -526,6 +581,17 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                     </div>
                 </div>
             </div>
+        </div>
+
+        <div className='desktop_view_product_first_section_right_hr'/> 
+
+        <div className='desktop_view_product_full_description'>
+            <div className="desktop_view_similar_products_header_left">
+                <h3 className='desktop_view_similar_products_header_label'>Full Description Details</h3>
+                <IoMdList size={20} />
+            </div>
+
+            <p className='desktop_view_product_full_description_text'>{product?.description}</p>
         </div>
 
         <div className='desktop_view_product_first_section_right_hr'/> 

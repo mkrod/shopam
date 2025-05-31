@@ -139,7 +139,7 @@ const MobileProductCard : React.FC<{data: Product, extraStyle?: CSSProperties}> 
         </div>
         <div className="mobile_product_card_metadata_price_container">
           <span className='mobile_product_card_metadata_price'>{data.price.currency + " " + formatNumberWithCommas(data.price.current)}</span>
-          {data.price.prev && <span className='mobile_product_card_metadata_old_price'>{data.price.currency + " " + formatNumberWithCommas(data.price.prev)}</span>}
+          {data.price.prev>0 && <span className='mobile_product_card_metadata_old_price'>{data.price.currency + " " + formatNumberWithCommas(data.price.prev)}</span>}
         </div>
         <div className="mobile_product_card_metadata_rating_container"></div>
         {data.location && <div className="mobile_product_card_metadata_location">

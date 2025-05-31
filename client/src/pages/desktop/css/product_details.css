@@ -261,6 +261,48 @@
     color: white;
 }
 
+.desktop_view_product_delivery_return_cards{
+    margin-top: 10px;
+    display: flex;
+    flex-direction: row;
+    gap: 20px;
+    flex-wrap: wrap;
+}
+
+.desktop_view_product_delivery_return_card{
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    width: 250px;
+    box-shadow: 0 0 10px var(--background-fade);
+    border-radius: 5px;
+    padding: 10px 20px;
+}
+
+.desktop_view_product_delivery_return_card_head{
+    display: flex;
+    flex-direction: row;
+    gap: 10px;
+    align-items: center;
+}
+
+.desktop_view_product_delivery_return_card_text{
+    font-size: 12px;
+    font-weight: 500;
+}
+
+.desktop_view_product_full_description{
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.desktop_view_product_full_description_text{
+    font-size: 12px;
+    font-weight: 600;
+}
+
+
 /*/////////////////////////// Review Style ///////////////////// */
 
 .desktop_view_product_review_section_container{

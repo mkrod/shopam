@@ -1,16 +1,17 @@
 import ActivityIndicator from '@/components/activity_indicator'
 import MobileProductCard from '@/components/mobile_product_card';
 import ReviewCard from '@/components/review_card';
-import { formatNumberWithCommas, returnUrl } from '@/constants';
+import { formatDeliveryDate, formatNumberWithCommas, returnUrl } from '@/constants';
 import { addToCart, addToWishList, IncreaseCartItemQty, MinusCartItemQty, removeCartItem, removeWishItem, Response } from '@/constants/api';
 import useHorizontalInfiniteScroll from '@/constants/infinite_hor_scroll';
 import { CartProp, Product, useGlobalProvider } from '@/constants/provider';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import React, { useEffect, useState } from 'react'
 import { AiOutlineShoppingCart } from 'react-icons/ai';
-import { FaHeart, FaMinus, FaPlus, FaRegHeart } from 'react-icons/fa6';
+import { FaAngleDown, FaAngleUp, FaHeart, FaMinus, FaPlus, FaRegHeart } from 'react-icons/fa6';
+import { GiCardPickup } from 'react-icons/gi';
 import { RiShoppingBagLine } from 'react-icons/ri';
-import { TbShoppingCartX } from 'react-icons/tb';
+import { TbShoppingCartX, TbTruckDelivery, TbTruckReturn } from 'react-icons/tb';
 import { useNavigate } from 'react-router';
 import { Rating } from 'react-simple-star-rating';
 import stringSimilarity from "string-similarity";
@@ -27,7 +28,7 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
   const navigate = useNavigate();
 
   useEffect(() => {
-      if(!products || !id) return;
+    if((!products || products.length === 0) || !id) return;
       const thisProduct = products.find((item: Product) => item.id === id);
       if(!thisProduct) {
         navigate(-1);
@@ -279,6 +280,25 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
    }
 
 
+      /// delivery, etc
+      const [deliveryDate, setDeliveryDate] = useState<{delivery?:string;pickup?:string;}>({});
+  
+      useEffect(() => {
+      if (!product || !product.deliveryTime) return;
+      let delivery: string | undefined;
+      let pickup: string | undefined;
+  
+      if (product.deliveryTime) {
+          delivery = new Date(Date.now() + Number(product.deliveryTime) * 24 * 60 * 60 * 1000).toISOString();
+      }
+      if (product.pickupTime) {
+          pickup = new Date(Date.now() + Number(product.pickupTime) * 24 * 60 * 60 * 1000).toISOString();
+      }
+      setDeliveryDate({ delivery, pickup });
+      }, [product]);
+
+
+      const [showingFullDescription, setShowingFullDescription] = useState<boolean>(false);
 
 
             
@@ -335,11 +355,11 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
           {product?.price && <h2>{product.price.currency + " " + formatNumberWithCommas(product.price.current)}</h2>}
           {product?.discount && <span className='mobile_view_product_price_discount'>{product.discount.percentage + "%"}</span>}
         </div>
-        {product?.price && <p className='mobile_view_product_price_old'>{product.price.currency + " " + formatNumberWithCommas(product.price.prev)}</p>}
+        {product && (product?.price?.prev||0)>0 && <p className='mobile_view_product_price_old'>{product?.price.currency + " " + formatNumberWithCommas(product.price.prev)}</p>}
       </div>
 
       <div className="mobile_view_product_size_variant_qty_container">
-        {product?.variant?.size && (
+        {product?.variant && (product?.variant?.size||[])?.length>0 && (
           <div style={{margin: 0}} className='mobile_view_product_sizes_variant_container'>
             <h4 style={{color: "var(--color)"}}>Select Size</h4>
             <div className="mobile_view_product_size_variant_container">
@@ -362,7 +382,7 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
       </div>
 
 
-      {product?.variant?.color && (
+      {product?.variant && (product?.variant?.color||[])?.length>0 && (
           <div className='mobile_view_product_sizes_variant_container'>
             <h4 style={{color: "var(--color)"}}>Select Color</h4>
             <div className="mobile_view_product_size_variant_container">
@@ -373,29 +393,18 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
           </div>
         )}
 
-
-        {product?.description && (
-          <div className="mobile_view_product_description_section_container">
-            <h4>Description</h4>
-
-            <div className="mobile_view_product_description_container">
-              <p className='mobile_view_product_description'>{product.description}</p>
-            </div>
-          </div>
-        )}
-
         
         <div className='desktop_view_product_first_section_right_brand_etc'>
             <div className="desktop_view_product_first_section_right_brand_etc_left">
                 <span className='desktop_view_product_first_section_right_brand_etc_label'>Brand</span>
                 {product?.category && <span className='desktop_view_product_first_section_right_brand_etc_label'>Category</span>}
-                {product?.manufacturer && <span className='desktop_view_product_first_section_right_brand_etc_label'>Manufacturer</span>}
+                {product?.vendor_name && <span className='desktop_view_product_first_section_right_brand_etc_label'>Seller</span>}
                 {product?.tags && <span className='desktop_view_product_first_section_right_brand_etc_label'>Tags</span>}
             </div>
             <div className="desktop_view_product_first_section_right_brand_etc_right">
                 <span className='desktop_view_product_first_section_right_brand_etc_value'>{product?.brand ? product?.brand : "Generic"}</span>
                 {product?.category && <span className='desktop_view_product_first_section_right_brand_etc_value'>{product.category.name}</span>}
-                {product?.manufacturer && <span className='desktop_view_product_first_section_right_brand_etc_value'>{product.manufacturer}</span>}
+                {product?.vendor_name && <span className='desktop_view_product_first_section_right_brand_etc_value'>{product.vendor_name}</span>}
                 {product?.tags && <div style={{display: "flex", gap: "5px", alignItems: "center"}} className='desktop_view_product_first_section_right_brand_etc_value'>{product.tags.map((tags: string, index: number) => (<span key={index}>{tags}</span>))}</div>}
             </div>              
         </div>
@@ -460,6 +469,66 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
               </div>
            </div>
         )}
+
+
+        <div className="mobile_view_product_delivery_return_container">
+
+
+          {product?.canDeliver && product.nationalDelivery && deliveryDate.delivery && <div className="mobile_view_product_delivery_return_card">
+            <div className="mobile_view_product_delivery_return_card_icon">
+              <TbTruckDelivery size={20} />
+            </div>
+            <div className='mobile_view_product_delivery_return_content'>
+              <h4>Delivery</h4>
+              <p>Estimated Delivery <b>{formatDeliveryDate(deliveryDate.delivery)}</b> when you place order within the next 24hours</p>
+            </div>
+          </div>}
+
+          {product?.canPickup && !product.pickupLocation && deliveryDate.pickup && <div className="mobile_view_product_delivery_return_card">
+            <div className="mobile_view_product_delivery_return_card_icon">
+              <GiCardPickup size={20} />
+            </div>
+            <div className='mobile_view_product_delivery_return_content'>
+              <h4>Pickup</h4>
+              <p>Ready for pickup as at <b>{formatDeliveryDate(deliveryDate.pickup)}</b> if you place your order within the next 24hours</p>
+            </div>
+          </div>}
+
+          {product?.return?.active && <div className="mobile_view_product_delivery_return_card">
+            <div className="mobile_view_product_delivery_return_card_icon">
+              <TbTruckReturn size={20} />
+            </div>
+            <div className='mobile_view_product_delivery_return_content'>
+              <h4>Return Policy</h4>
+              <p>{product?.return?.policy}</p>
+            </div>
+          </div>}
+
+
+        </div>
+
+
+        {product?.description && (
+          <div className="mobile_view_product_description_section_container">
+            <div className="mobile_view_product_description_section_header">
+              <h4>Description</h4>
+              <div onClick={()=>  setShowingFullDescription(!showingFullDescription)} className='mobile_view_product_description_section_header_expand'>
+                {!showingFullDescription && <h5>Expand</h5>}
+                {showingFullDescription && <h5>Collapse</h5>}
+                {showingFullDescription && <FaAngleUp />}
+                {!showingFullDescription && <FaAngleDown />}
+              </div>
+            </div>
+
+
+            <div className="mobile_view_product_description_container">
+              <p className='mobile_view_product_description'>
+                {product.description.length > 500 ? showingFullDescription  ? product.description :  product.description.slice(0, 500) + " ...":  product.description}
+              </p>
+            </div>
+          </div>
+        )}
+
 
 
 

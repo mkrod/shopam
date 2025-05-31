@@ -61,7 +61,9 @@
     box-shadow: 0 0 20px var(--background-fade);
     padding: 10px;
     color: var(--color);
-    min-width: 200px;
+    min-width: 300px;
+    overflow: auto;
+    max-height: max(60vh, 300px);
 }
 
 .desktop_navbar_category{

@@ -16,9 +16,10 @@ interface Props {
     onSelect?: (value: any) => void; 
     allSelected: boolean; 
     setAllSelected: (value: boolean) => void;
+    removeSelected: (id: string) => void
 }
 
-const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, setAllSelected }) : React.JSX.Element => {
+const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, setAllSelected, removeSelected }) : React.JSX.Element => {
 
     const navigate = useNavigate();
 
@@ -53,6 +54,7 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
         if(response.message === "success"){
             setNote({type: "success", title: "Success", body: "Item removed from cart"});
             setCartChanged(true);
+            removeSelected(product.id);
             return setTimeout(() => setNote(undefined), 2000);
         }else{
             setNote({type: "error", title: "Failed", body: "failed to cart item"});
@@ -97,7 +99,7 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
                 }
             }))}>
                 {product.price && <h4>{currency.symbol + " " +  formatNumberWithCommas(product.price.current)}</h4>}
-                {product.price.prev && <h6 className='cart_card_metadata_prev_price'>{currency.symbol + " " +  formatNumberWithCommas(product.price.prev)}</h6>}
+                {product.price.prev !== 0 && <h6 className='cart_card_metadata_prev_price'>{currency.symbol + " " +  formatNumberWithCommas(product.price.prev)}</h6>}
             </div>
 
             {data.variant && <div className="cart_card_variant_container">

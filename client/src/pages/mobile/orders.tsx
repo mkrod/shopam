@@ -20,7 +20,7 @@ const MobileOrders : React.FC = () : React.JSX.Element => {
       onclick: () => setActiveTab(tabs[1]),
     },
     {
-      name: "Completed",
+      name: "Delivered",
       onclick: () => setActiveTab(tabs[2]),
     },
     {
@@ -38,13 +38,13 @@ const MobileOrders : React.FC = () : React.JSX.Element => {
   const [isFiltering, setIsFiltering] = useState<boolean>(true);
   const { orderList } = useGlobalProvider();
   useEffect(() => {
-    if(orderList.length < 1) return;
+    if(orderList.length < 1) return setIsFiltering(false);;
     setIsFiltering(true);
     if(activeTab.name.toLowerCase() === "all") {
       setTimeout(()=>{
         setFilteredList(orderList);
         setIsFiltering(false);
-      }, 1500);
+      }, 1000);
       return;
     }
     const filter = orderList.filter((order)=>order.status.toLowerCase()===activeTab.name.toLowerCase());

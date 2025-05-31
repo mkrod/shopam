@@ -62,7 +62,13 @@ const DesktopCart : React.FC<{data: CartProp[]}> = ({ data })  : React.JSX.Eleme
     <div className='desktop_cart_container'>
         <div className="desktop_cart_main_container">
             {data.length > 0 && data.map((cart: CartProp, index: number) => (
-                <CartCard allSelected={allselected} setAllSelected={(value) => setAllSelected(value)} onSelect={handleTotal} key={index} data={cart}  />
+                <CartCard
+                 allSelected={allselected}
+                 setAllSelected={(value) => setAllSelected(value)}
+                 onSelect={handleTotal} key={index} 
+                 data={cart}  
+                 removeSelected={(id) => setSelectedCart(selectedCart.filter((s)=>s.id!==id))}
+                 />
             ))}
             {data.length < 1 && <div className="mobile_saved_no_content">
                 <TbShoppingCartDollar size={35} />

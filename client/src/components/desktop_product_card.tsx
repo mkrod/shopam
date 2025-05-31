@@ -133,7 +133,7 @@ const DesktopProductCard : React.FC<{data: Product}> = ({ data }) : React.JSX.El
             </div>
             <div className="desktop_product_card_price_container">
                 <span className='desktop_product_card_current_price'>{currency.symbol + " " + formatNumberWithCommas(data.price.current)}</span>
-                {data.price.prev && <span className='desktop_product_card_prev_price'>{currency.symbol + " " + formatNumberWithCommas(data.price.prev)}</span>}
+                {data.price.prev>0 && <span className='desktop_product_card_prev_price'>{currency.symbol + " " + formatNumberWithCommas(data.price.prev)}</span>}
             </div>
             <div className="desktop_product_card_ratings_container">
 
