@@ -85,7 +85,7 @@ const DeskTopTabNavBar : React.FC = () : React.JSX.Element => {
 
         {filteredSuggestion.length > 0 && (
           <SearchSuggestion 
-          otherStyle={{position: "absolute", width: "max(450px, 30%)", boxShadow: "0 0 20px var(--background-fade)"}}
+          otherStyle={{position: "absolute", width: "max(450px, 30%)", overflow:'auto', maxHeight: "350px", boxShadow: "0 0 20px var(--background-fade)"}}
           data={filteredSuggestion}
           emptyList={() => setFilteredSuggestion([])}
           />

@@ -5,6 +5,7 @@ import { formatDeliveryDate, formatNumberWithCommas, returnUrl } from '@/constan
 import { addToCart, addToWishList, IncreaseCartItemQty, MinusCartItemQty, removeCartItem, removeWishItem, Response } from '@/constants/api';
 import useHorizontalInfiniteScroll from '@/constants/infinite_hor_scroll';
 import { CartProp, Product, useGlobalProvider } from '@/constants/provider';
+import equal from 'fast-deep-equal';
 import PhotoSwipeLightbox from 'photoswipe/lightbox';
 import React, { useEffect, useState } from 'react'
 import { AiOutlineShoppingCart } from 'react-icons/ai';
@@ -89,61 +90,20 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
 
 
 
-
-
-    const [variant, setVariant] = useState<{size: string, color: string}>({size: "", color: ""});
-    const [qty, setQty] = useState<number>(1)
-    const [isAddingCart, setIsAddingCart] = useState<boolean>();
-      const addItemTocart = async () => {
-         if(!product) {
-             setNote({type: "error", title: "Failed", body: "failed to cart item"});
-             return setTimeout(() => setNote(undefined), 2000);
-         }
-         setIsAddingCart(true);
-         if(!user.email || !user.user_id){
-           setNote({type: "error", title: "Failed", body: "Please log in"});
-           setIsAddingCart(false);
-           return setTimeout(() => setNote(undefined), 2000);
-         }
-   
-          const response : Response = await addToCart({id: product.id, qty: String(qty), variant});
-         if(response.message === "success"){
-             setNote({type: "success", title: "Success", body: "Item added to cart"});
-             setCartChanged(true);
-             setIsAddingCart(false);
-             return setTimeout(() => setNote(undefined), 2000);
-         }else{
-             setNote({type: "error", title: "Failed", body: "failed to cart item"});
-             return setTimeout(() => setNote(undefined), 2000);
-         }
-       }
-       
-       const removeFromCart = async () => {
-        if(!product) return;
-            const response : Response = await removeCartItem({id: product.id});
-            if(response.message === "success"){
-                setNote({type: "success", title: "Success", body: "Item removed from cart"});
-                setCartChanged(true);
-                setIsAddingCart(false);
-                return setTimeout(() => setNote(undefined), 2000);
-            }else{
-                setNote({type: "error", title: "Failed", body: "failed to cart item"});
-                return setTimeout(() => setNote(undefined), 2000);
-            }
-       }
+             
 
 
 
  
-    const [cantProceed, setCantProceed] = useState<boolean>();
 
-    useEffect(() => {
+
+   /* useEffect(() => {
       if (!product || !product.variant) return;
       const sizes = Array.isArray(product.variant.size) ? product.variant.size : [];
       const colors = Array.isArray(product.variant.color) ? product.variant.color : [];
       const cantproceed: boolean = ((sizes.length > 0 && variant.size === "") || (colors.length > 0 && variant.color === "") || !product.availability);
       setCantProceed(cantproceed);
-    }, [product, variant]);
+    }, [product, variant]); */
 
 
  
@@ -301,6 +261,95 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
       const [showingFullDescription, setShowingFullDescription] = useState<boolean>(false);
 
 
+      const [cantProceed, setCantProceed] = useState<boolean>(true);
+      /// updated variant logic
+      type VT = {
+        name: string; //the variant group e.g size, color
+        value: string;
+        price: number;
+      }
+      const [productVariant, setProductVariant] = useState<Record<string, VT[]>>({});
+      const [isVariant, setIsVariant] = useState<boolean>(false);
+      const [selectedVariant, setSelectedVariant] = useState<VT[]>([]);
+      //group the variants by variant name i.e size, e.t.c
+      useEffect(()  =>{
+        if(!product || !product.variant) return;
+        const groupped : Record<string, VT[]> = product.variant.reduce((acc: Record<string, VT[]>, curr) => {
+          if(!acc[curr.name]) {
+              acc[curr.name] = [{
+              name:  curr.name,
+              value: curr.value,
+              price: curr.price  || 0,
+            }];
+          }else{
+              acc[curr.name].push({
+              name:  curr.name,
+              value: curr.value,
+              price: curr.price  || 0,
+            });
+          }
+          return acc;
+        }, {});
+
+        setProductVariant(groupped);
+      }, [product, products]);
+
+      useEffect(() => {
+        const isPriceyVariant= Object.entries(selectedVariant).some(([_, value]) => {
+          const variantValue = value as VT;
+          return variantValue.price !== 0;
+        });
+
+        setIsVariant(isPriceyVariant); //this useEffect check if a variant with different in price have been selected.
+      }, [selectedVariant]);
+
+      useEffect(() => {
+        if(selectedVariant.length < Object.keys(productVariant).length) return setCantProceed(true);
+        return setCantProceed(false)
+        
+      }, [selectedVariant, product, productVariant]);
+
+      //console.log(cantProceed)
+          //const [variant, setVariant] = useState<{size: string, color: string}>({size: "", color: ""});
+    const [qty, setQty] = useState<number>(1)
+    const [isAddingCart, setIsAddingCart] = useState<boolean>();
+      const addItemTocart = async () => {
+         if(!product) {
+             setNote({type: "error", title: "Failed", body: "failed to cart item"});
+             return setTimeout(() => setNote(undefined), 2000);
+         }
+         setIsAddingCart(true);
+         if(!user.email || !user.user_id){
+           setNote({type: "error", title: "Failed", body: "Please log in"});
+           setIsAddingCart(false);
+           return setTimeout(() => setNote(undefined), 2000);
+         }
+   
+          const response : Response = await addToCart({id: product.id, qty: String(qty), variant:selectedVariant});
+         if(response.message === "success"){
+             setNote({type: "success", title: "Success", body: "Item added to cart"});
+             setCartChanged(true);
+             setIsAddingCart(false);
+             return setTimeout(() => setNote(undefined), 2000);
+         }else{
+             setNote({type: "error", title: "Failed", body: "failed to cart item"});
+             return setTimeout(() => setNote(undefined), 2000);
+         }
+       }
+       
+       const removeFromCart = async () => {
+        if(!product) return;
+            const response : Response = await removeCartItem({id: product.id});
+            if(response.message === "success"){
+                setNote({type: "success", title: "Success", body: "Item removed from cart"});
+                setCartChanged(true);
+                setIsAddingCart(false);
+                return setTimeout(() => setNote(undefined), 2000);
+            }else{
+                setNote({type: "error", title: "Failed", body: "failed to cart item"});
+                return setTimeout(() => setNote(undefined), 2000);
+            }
+       }
             
   return (
     <div className='mobile_view_product_container'>
@@ -352,23 +401,15 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
 
       <div className="mobile_view_product_price_discount_section_container">
         <div className="mobile_view_product_price_discount_container">
-          {product?.price && <h2>{product.price.currency + " " + formatNumberWithCommas(product.price.current)}</h2>}
+          {!isVariant && product?.price && <h2>{product.price.currency + " " + formatNumberWithCommas(product.price.current)}</h2>}
+          {isVariant && <h2>{product?.price.currency + " " + formatNumberWithCommas((selectedVariant.find((sv) => sv.price > 0)?.price || product?.price?.current || 0))}</h2>}
           {product?.discount && <span className='mobile_view_product_price_discount'>{product.discount.percentage + "%"}</span>}
         </div>
         {product && (product?.price?.prev||0)>0 && <p className='mobile_view_product_price_old'>{product?.price.currency + " " + formatNumberWithCommas(product.price.prev)}</p>}
       </div>
 
       <div className="mobile_view_product_size_variant_qty_container">
-        {product?.variant && (product?.variant?.size||[])?.length>0 && (
-          <div style={{margin: 0}} className='mobile_view_product_sizes_variant_container'>
-            <h4 style={{color: "var(--color)"}}>Select Size</h4>
-            <div className="mobile_view_product_size_variant_container">
-              {product.variant.size?.map((size: string, index: number) => (
-                <span key={index} onClick={() => setVariant((prev) => ({...prev, size: size}))}  className={`mobile_view_product_size ${variant.size === size && "selected_variant"}`}>{size.toUpperCase()}</span>
-              ))}
-            </div>
-          </div>
-        )}
+
         
         <div className="mobile_view_product_qty_container">
           <button onClick={decreaseQty} className='mobile_view_product_qty_button'>
@@ -382,16 +423,46 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
       </div>
 
 
-      {product?.variant && (product?.variant?.color||[])?.length>0 && (
-          <div className='mobile_view_product_sizes_variant_container'>
-            <h4 style={{color: "var(--color)"}}>Select Color</h4>
+      {Object.entries(productVariant).length > 0 && Object.entries(productVariant).map(([key, value]:[string, VT[]], index) => {
+      
+        return (
+          <div key={index} className='mobile_view_product_sizes_variant_container'>
+            <h4 style={{color: "var(--color)"}}>Select {key}</h4>
             <div className="mobile_view_product_size_variant_container">
-              {product.variant.color?.map((color: string, index: number) => (
-                <span key={index} onClick={() => setVariant((prev) => ({...prev, color: color}))}  className={`mobile_view_product_size ${variant.color === color && "selected_variant"}`}>{color.toUpperCase()}</span>
+              {value.map((val: VT, idx: number) => (
+                <span 
+                key={idx} 
+                onClick={() => {
+                  const alreadySelected = selectedVariant.some((sv) => equal(val, sv));
+                
+                  if (alreadySelected) {
+                    // Remove if already selected
+                    const newOne = selectedVariant.filter((sv) => !equal(sv, val));
+                    return setSelectedVariant(newOne);
+                  }
+                
+                  const hasSameName = selectedVariant.some((sv) => sv.name === val.name);
+                
+                  if (hasSameName) {
+                    // Replace variant of same name
+                    const newOne = selectedVariant.map((sv) =>
+                      sv.name === val.name ? val : sv
+                    );
+                    return setSelectedVariant(newOne);
+                  }
+                
+                  // Add new variant
+                  setSelectedVariant([...selectedVariant, val]);
+                }}
+                
+                className={`mobile_view_product_size ${selectedVariant.some((sv)=> sv.value === val.value ) && "selected_variant"}`}
+                >
+                  {val.value.toUpperCase()}
+                </span>
               ))}
             </div>
           </div>
-        )}
+        )})}
 
         
         <div className='desktop_view_product_first_section_right_brand_etc'>
@@ -548,7 +619,7 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
           <button
            onClick={() => navigate(returnUrl({
                 goto: "/checkout",
-            }), {state: [{id, qty, variant}]})}
+            }), {state: [{id, qty, selectedVariant}]})}
           disabled={cantProceed} className='mobile_view_product_buy_button'>
              <RiShoppingBagLine />
              Buy Now

@@ -37,10 +37,10 @@ redisClient.connect().then(() => console.log("✅ Connected to Redis"));
 
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = [
+    const allowedOrigins = process.env.CLIENT || [
       client,
       "http://192.168.43.103",
-      "http://localhost:5173",
+      "http://192.168.43.103:5173",
       "http://127.0.0.1"
     ];
     if (!origin || allowedOrigins.includes(origin)) {

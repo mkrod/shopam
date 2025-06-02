@@ -1,5 +1,5 @@
 import CartCard from '@/components/cart_card'
-import { CartProp, useGlobalProvider } from '@/constants/provider'
+import { CartProp, useGlobalProvider, Variant } from '@/constants/provider'
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router';
 import "./css/cart.css";
@@ -13,21 +13,23 @@ const DesktopCart : React.FC<{data: CartProp[]}> = ({ data })  : React.JSX.Eleme
     const [total, setTotal] = useState<number | undefined>(undefined);
     const { products, cart } = useGlobalProvider();
   
-    useEffect(() => {
-      if(!products || !selectedCart || selectedCart.length < 1) return setTotal(undefined);
-      let total = 0;
-  
-      selectedCart.forEach((Cart) => {
-        const thisCart = products?.find((c) => c.id === Cart.id);
-        if (thisCart?.price?.current) {
-          let price = thisCart.price.current;
-          let qty: number = cart.find((ct) => ct.id === Cart.id)?.qty as number || 1;
-          total += price * qty;
-        }
-      });
-  
-      setTotal(total);
-    }, [selectedCart, products]);
+  useEffect(() => {
+    if(!products || !selectedCart || selectedCart.length < 1) return setTotal(undefined);
+    let total = 0;
+
+    selectedCart.forEach((Cart) => {
+      const thisCart = cart?.find((c) => c.id === Cart.id);
+      const thisProduct = products.find((p)=>p.id===Cart.id);
+      if(thisCart&&thisProduct){
+        const hasVarAmount = Object.values(thisCart.variant||{}).some((val: Variant) => val.price !== 0);
+        const price:number = ((!hasVarAmount ? thisProduct?.price.current : Object.values(thisCart.variant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
+        let qty: number = thisCart.qty as number || 1;
+        total += price*qty;
+      }
+    });
+
+    setTotal(total);
+  }, [selectedCart, products]);
   
     const handleTotal = (currentCard: {id: string}) => {
       const isAvailable = selectedCart.find((sc) => sc.id === currentCard.id);

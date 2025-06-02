@@ -22,10 +22,7 @@ export interface HomeBanner {
 export interface CartProp {
     id: string;
     qty?: string | number;
-    variant?:{
-        size?: string | number;
-        color?: string | number;
-    } 
+    variant?: Record<string, Variant>;
 }
 
 export type Suggestion = {
@@ -39,6 +36,11 @@ export type Suggestion = {
     lga: string; // Local Government Area (LGA) of the delivery location
     fee: number; // delivery fee for this location
     estimatedTime: string; // estimated delivery time for this location
+}
+export interface Variant {
+    name: string;
+    value: string;
+    price: number;
 }
 export interface Product {
     id: string; // product id
@@ -90,10 +92,7 @@ export interface Product {
         description?: string;
         gallery?: string[];
     };
-    variant?: {
-        size?: string [];
-        color?: string[];
-    };
+    variant?: Variant[];
     return?: {
         active:  boolean;
         policy: string;
@@ -142,11 +141,9 @@ export interface Orders {
   desc: Product['description'];
   images?: Product['gallery'];
   price: Product['price'];
+  salePrice: number;
   qty:  string | number;
-  variant?: {
-    size?: string;
-    color?:  string; 
-  };
+  variant?: Record<string, Variant>;
   status?: string;
   updated_at?: string | Date;
 }

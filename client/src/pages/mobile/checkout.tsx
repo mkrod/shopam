@@ -1,4 +1,4 @@
-import { CartProp, Orders, useGlobalProvider } from '@/constants/provider';
+import { CartProp, Orders, useGlobalProvider, Variant } from '@/constants/provider';
 import React, { useEffect, useState } from 'react'
 import { TbTruckDelivery } from 'react-icons/tb';
 import "./css/checkout.css";
@@ -30,9 +30,20 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
       
 
   const navigate = useNavigate()
-  const { user, currency, products, setLoading, setNote } = useGlobalProvider();
+  const { user, currency, products, setLoading, setNote, cart } = useGlobalProvider();
   const [orders, setOrders] = useState<Orders[]>([]);
   const [message, setMessage] = useState<string>("");
+
+  function getSalesPrice(cartItem:CartProp):number{ 
+    let price = 0;
+    const thisCart = cart?.find((c) => c.id === cartItem.id);
+    const thisProduct = products?.find((p)=>p.id===cartItem.id);
+    if(thisCart&&thisProduct){
+      const hasVarAmount = Object.values(thisCart.variant||{}).some((val: Variant) => val.price !== 0);
+      price = ((!hasVarAmount ? thisProduct?.price.current : Object.values(thisCart.variant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
+    }
+    return price;
+  }
 
   useEffect(() => {
     if (!data || !products) return;
@@ -46,13 +57,9 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
         images: thisProduct.gallery,
         desc: thisProduct.description,
         price: thisProduct.price,
+        salePrice: getSalesPrice(item),
         qty: item.qty ?? 1,
-        variant: item.variant
-          ? {
-              size: typeof item.variant.size === 'string' ? item.variant.size : undefined,
-              color: typeof item.variant.color === 'string' ? item.variant.color : undefined,
-            }
-          : undefined,
+        variant: item.variant,
           status: "",
           order_item_id: "",
       };
@@ -86,7 +93,7 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
   useEffect(() => {
     let sub_total : number = 0;
     orders.forEach((o)=>{
-      sub_total += (o.price.current * ((o.qty) as number));
+      sub_total += (o.salePrice * ((o.qty) as number));
     })
     setSubTotal(sub_total);
   }, [data, products, orders]);

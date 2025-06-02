@@ -36,13 +36,15 @@ const addToCart = async (req, res) => {
     const [result] = await db.execute("SELECT cart from data WHERE user_id = ? ", [user_id]);
     if(result.length > 0){
         const oldCart = JSON.parse(result[0].cart);
+        const alignedVariant = {}; //init
+        data.variant.forEach((selectedVariant) => {
+            const name = selectedVariant.name;
+            alignedVariant[name] = selectedVariant; //im modifying affectedlogic to use the new variant structure
+        })
         const newCart = {
             id: data.id,
             qty: data.qty ?? 1,
-            variant: {
-                size: data.size ?? null,
-                color: data.color ?? null,
-            },
+            variant: alignedVariant
         }
 
         const updatedCart = [...oldCart, newCart];

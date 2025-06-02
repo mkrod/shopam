@@ -11,10 +11,10 @@ export const getCategories = async () : Promise<Category[] | undefined> => {
 
     //logic to fetch categories here
     const response = await serverRequest("get", "categories");
-    console.log(response);
+    //console.log(response);
     if(response.message !== "success") return [];
     const category : Category[] = response.data;
-    console.log(category);
+    //console.log(category);
     if(response.status < 200 || response.status >= 300) return [];
     return category;
 }

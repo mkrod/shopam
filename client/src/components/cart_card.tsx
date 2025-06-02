@@ -1,6 +1,6 @@
 import React, { CSSProperties, useEffect, useState } from 'react';
 import "./css/cart_card.css";
-import { CartProp, Product, useGlobalProvider } from '@/constants/provider';
+import { CartProp, Product, useGlobalProvider, Variant } from '@/constants/provider';
 import { RiDeleteBinLine } from 'react-icons/ri';
 //import { FaMinus, FaPlus } from 'react-icons/fa6';
 import ActivityIndicator from './activity_indicator';
@@ -62,6 +62,15 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
         }
     }
 
+    const [price, setPrice] = useState<number>(0);
+    useEffect(() => {
+        if(!data) return;
+
+        const hasVarAmount = Object.values(data.variant||{}).some((val: Variant) => val.price !== 0);
+        const price:number = ((!hasVarAmount ? product?.price.current : Object.values(data.variant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
+        setPrice(price)
+    },[data, product]);
+
    return product ? (
     <div style={otherStyles} className='cart_card_container'>
         <div className="cart_card_check_box_container">
@@ -98,11 +107,11 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
                     id: data.id
                 }
             }))}>
-                {product.price && <h4>{currency.symbol + " " +  formatNumberWithCommas(product.price.current)}</h4>}
+                {price > 0 && <h4>{currency.symbol + " " +  formatNumberWithCommas(price)}</h4>}
                 {product.price.prev !== 0 && <h6 className='cart_card_metadata_prev_price'>{currency.symbol + " " +  formatNumberWithCommas(product.price.prev)}</h6>}
             </div>
 
-            {data.variant && <div className="cart_card_variant_container">
+            {/*data.variant && <div className="cart_card_variant_container">
                 {data.variant.size && (
                 <div className='cart_card_variant_size_container'>
                     <span className='cart_cart_variant_label'>Size:</span>
@@ -113,7 +122,13 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
                     <span className='cart_cart_variant_label'>Color:</span>
                     <h5>{data.variant.color}</h5>
                 </div>)}
-            </div>}
+            </div>*/}
+
+        <div className="cart_card_variant_container">
+            {Object.values(data.variant||{}).length > 0 && Object.values(data.variant||{}).map((val:Variant, index: number) => (
+                <span className='cart_card_variant' key={index}>{val.value}</span>
+            ))}
+        </div>
 
             <div className="cart_card_delete_and_qty_container">
                 <div onClick={removeFromCart} style={{alignItems: "end", justifyContent: "start"}} className='cart_card_delete_icon'>

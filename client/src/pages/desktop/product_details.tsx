@@ -9,6 +9,7 @@ import { MdOutlineProductionQuantityLimits } from 'react-icons/md';
 import { FaCaretLeft, FaCaretRight, FaHeart, FaMinus, FaPlus, FaRegHeart } from 'react-icons/fa6';
 import DesktopProductCard from '@/components/desktop_product_card';
 import usePagination from '@/constants/usePagination';
+import equal from 'fast-deep-equal';
 import { IoMdList, IoMdShareAlt } from 'react-icons/io';
 import stringSimilarity from "string-similarity";
 import ReviewComponent from '@/components/reviews';
@@ -83,59 +84,11 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
 
       const [activeTab, setActiveTab] = useState<"reviews" | "discussion">("reviews");
 
-      const [variant, setVariant] = useState<{size: string, color: string}>({size: "", color: ""});
-      const [qty, setQty] = useState<number>(1);
-      
-
-      const [cantProceed, setCantProceed] = useState<boolean>();
-
-    useEffect(() => {
-      if (!product || !product.variant) return;
-      const sizes = Array.isArray(product.variant.size) ? product.variant.size : [];
-      const colors = Array.isArray(product.variant.color) ? product.variant.color : [];
-      const cantproceed: boolean = ((sizes.length > 0 && variant.size === "") || (colors.length > 0 && variant.color === "") || !product.availability);
-      setCantProceed(cantproceed);
-    }, [product, variant]);
 
 
-      const [isAddingCart, setIsAddingCart] = useState<boolean>();
-      const addItemTocart = async () => {
-         if(!product) {
-             setNote({type: "error", title: "Failed", body: "failed to cart item"});
-             return setTimeout(() => setNote(undefined), 2000);
-         }
-         setIsAddingCart(true);
-         if(!user.email || !user.user_id){
-           setNote({type: "error", title: "Failed", body: "Please log in"});
-           setIsAddingCart(false);
-           return setTimeout(() => setNote(undefined), 2000);
-         }
-   
-          const response : Response = await addToCart({id: product.id, qty: String(qty), variant});
-         if(response.message === "success"){
-             setNote({type: "success", title: "Success", body: "Item added to cart"});
-             setCartChanged(true);
-             setIsAddingCart(false);
-             return setTimeout(() => setNote(undefined), 2000);
-         }else{
-             setNote({type: "error", title: "Failed", body: "failed to cart item"});
-             return setTimeout(() => setNote(undefined), 2000);
-         }
-       }
+
+
        
-       const removeFromCart = async () => {
-        if(!product) return;
-            const response : Response = await removeCartItem({id: product.id});
-            if(response.message === "success"){
-                setNote({type: "success", title: "Success", body: "Item removed from cart"});
-                setCartChanged(true);
-                setIsAddingCart(false);
-                return setTimeout(() => setNote(undefined), 2000);
-            }else{
-                setNote({type: "error", title: "Failed", body: "failed to cart item"});
-                return setTimeout(() => setNote(undefined), 2000);
-            }
-       }
 
 
       const [ratingBreakdown, setRatingBreakdown] = useState<{
@@ -292,7 +245,95 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
     }, [product]);
 
 
-
+          const [cantProceed, setCantProceed] = useState<boolean>(true);
+          /// updated variant logic
+          type VT = {
+            name: string; //the variant group e.g size, color
+            value: string;
+            price: number;
+          }
+          const [productVariant, setProductVariant] = useState<Record<string, VT[]>>({});
+          const [isVariant, setIsVariant] = useState<boolean>(false);
+          const [selectedVariant, setSelectedVariant] = useState<VT[]>([]);
+          //group the variants by variant name i.e size, e.t.c
+          useEffect(()  =>{
+            if(!product || !product.variant) return;
+            const groupped : Record<string, VT[]> = product.variant.reduce((acc: Record<string, VT[]>, curr) => {
+              if(!acc[curr.name]) {
+                  acc[curr.name] = [{
+                  name:  curr.name,
+                  value: curr.value,
+                  price: curr.price  || 0,
+                }];
+              }else{
+                  acc[curr.name].push({
+                  name:  curr.name,
+                  value: curr.value,
+                  price: curr.price  || 0,
+                });
+              }
+              return acc;
+            }, {});
+    
+            setProductVariant(groupped);
+          }, [product, products]);
+    
+          useEffect(() => {
+            const isPriceyVariant= Object.entries(selectedVariant).some(([_, value]) => {
+              const variantValue = value as VT;
+              return variantValue.price !== 0;
+            });
+    
+            setIsVariant(isPriceyVariant); //this useEffect check if a variant with different in price have been selected.
+          }, [selectedVariant]);
+    
+          useEffect(() => {
+            if(selectedVariant.length < Object.keys(productVariant).length) return setCantProceed(true);
+            return setCantProceed(false)
+            
+          }, [selectedVariant, product, productVariant]);
+    
+          //console.log(cantProceed)
+              //const [variant, setVariant] = useState<{size: string, color: string}>({size: "", color: ""});
+        const [qty, setQty] = useState<number>(1)
+        const [isAddingCart, setIsAddingCart] = useState<boolean>();
+          const addItemTocart = async () => {
+             if(!product) {
+                 setNote({type: "error", title: "Failed", body: "failed to cart item"});
+                 return setTimeout(() => setNote(undefined), 2000);
+             }
+             setIsAddingCart(true);
+             if(!user.email || !user.user_id){
+               setNote({type: "error", title: "Failed", body: "Please log in"});
+               setIsAddingCart(false);
+               return setTimeout(() => setNote(undefined), 2000);
+             }
+       
+              const response : Response = await addToCart({id: product.id, qty: String(qty), variant:selectedVariant});
+             if(response.message === "success"){
+                 setNote({type: "success", title: "Success", body: "Item added to cart"});
+                 setCartChanged(true);
+                 setIsAddingCart(false);
+                 return setTimeout(() => setNote(undefined), 2000);
+             }else{
+                 setNote({type: "error", title: "Failed", body: "failed to cart item"});
+                 return setTimeout(() => setNote(undefined), 2000);
+             }
+           }
+           
+           const removeFromCart = async () => {
+            if(!product) return;
+                const response : Response = await removeCartItem({id: product.id});
+                if(response.message === "success"){
+                    setNote({type: "success", title: "Success", body: "Item removed from cart"});
+                    setCartChanged(true);
+                    setIsAddingCart(false);
+                    return setTimeout(() => setNote(undefined), 2000);
+                }else{
+                    setNote({type: "error", title: "Failed", body: "failed to cart item"});
+                    return setTimeout(() => setNote(undefined), 2000);
+                }
+           }
 
 
   return (
@@ -354,7 +395,8 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
 
                 <div className='desktop_view_product_first_section_right_price_save_qty_container'>
                     <div className="desktop_view_product_first_section_right_price_container">
-                        <h4 className='desktop_view_product_first_section_right_price'>{product?.price.currency + " " + formatNumberWithCommas(product?.price.current || 0)}</h4>
+                        {!isVariant && product?.price &&<h4 className='desktop_view_product_first_section_right_price'>{product?.price.currency + " " + formatNumberWithCommas(product?.price.current || 0)}</h4>}
+                        {isVariant && <h4 className='desktop_view_product_first_section_right_price'>{product?.price.currency + " " + formatNumberWithCommas((selectedVariant.find((sv) => sv.price > 0)?.price || product?.price?.current || 0))}</h4>}
                         {(product?.price?.prev||0)>0&&<span className='desktop_view_product_first_section_right_old_price'>{product?.price.currency + " " + formatNumberWithCommas(product?.price.prev || 0)}</span>}
                     </div>
 
@@ -374,42 +416,49 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                         </button>
                     </div>
                 </div>
-                
 
-                {product?.variant && (product?.variant?.size||[])?.length>0 && (
-                    <div style={{width: "100%"}}>
-                        <div className='desktop_view_product_first_section_right_hr'/> 
-                        <div className="desktop_view_product_variant_section_container">
-                            {product.variant?.size?.map((size: string, index: number) => (
-                                <span 
-                                    key={index} 
-                                    onClick={() => setVariant((prev) => ({...prev, size: size}))} 
-                                    title={size}
-                                    className={`desktop_view_product_variant ${variant.size === size && "selected_variant"}`}
-                                >
-                                    {size.toUpperCase()}
-                                </span>
-                            ))}
-                            </div>
-                    </div>
-                )}
-                {product?.variant && (product?.variant?.color||[])?.length>0 &&  (
-                    <div style={{width: "100%"}}>
-                        <div className='desktop_view_product_first_section_right_hr'/> 
-                        <div className="desktop_view_product_variant_section_container">
-                            {product?.variant?.color?.map((color: string, index: number) => (
-                                <span 
-                                    key={index} 
-                                    onClick={() => setVariant((prev) => ({...prev, color: color}))} 
-                                    title={color}
-                                    className={`desktop_view_product_variant ${variant.color === color && "selected_variant"}`}
-                                >
-                                    {color.toUpperCase()}
-                                </span>
-                            ))}
-                            </div>
-                    </div>
-                )}
+
+                {Object.entries(productVariant).length > 0 && Object.entries(productVariant).map(([key, value]:[string, VT[]], index) => {
+                    
+                    return (
+                        <div key={index} style={{width: "100%", display:'flex', flexDirection: 'column', gap: 10}}>
+                            <div className='desktop_view_product_first_section_right_hr' /> 
+                                <h4 style={{color: "var(--color)"}}>Select {key}</h4>
+                                <div className="mobile_view_product_size_variant_container">
+                                    {value.map((val: VT, idx: number) => (
+                                    <span 
+                                    key={idx} 
+                                    onClick={() => {
+                                        const alreadySelected = selectedVariant.some((sv) => equal(val, sv));
+                                    
+                                        if (alreadySelected) {
+                                        // Remove if already selected
+                                        const newOne = selectedVariant.filter((sv) => !equal(sv, val));
+                                        return setSelectedVariant(newOne);
+                                        }
+                                    
+                                        const hasSameName = selectedVariant.some((sv) => sv.name === val.name);
+                                    
+                                        if (hasSameName) {
+                                        // Replace variant of same name
+                                        const newOne = selectedVariant.map((sv) =>
+                                            sv.name === val.name ? val : sv
+                                        );
+                                        return setSelectedVariant(newOne);
+                                        }
+                                    
+                                        // Add new variant
+                                        setSelectedVariant([...selectedVariant, val]);
+                                    }}
+                                    className={`desktop_view_product_variant ${selectedVariant.some((sv)=> sv.value === val.value ) && "selected_variant"}`}
+                                    >
+                                        {val.value.toUpperCase()}
+                                    </span>
+                                    ))}
+                                </div>
+                             </div>
+                )})}
+
 
                 <div className='desktop_view_product_first_section_right_hr'/> 
 
@@ -443,7 +492,7 @@ const ProductDesktop : React.FC<{id:  string | undefined}> = ({ id }) : React.JS
                     </button>}
                     <button onClick={() => navigate(returnUrl({
                         goto: "/checkout",
-                    }), {state: [{id, qty, variant}]})} disabled={cantProceed} className="desktop_view_product_first_section_right_buy">Buy now</button>
+                    }), {state: [{id, qty, selectedVariant}]})} disabled={cantProceed} className="desktop_view_product_first_section_right_buy">Buy now</button>
                     <button className="desktop_view_product_first_section_right_share" onClick={() => {
                         
                         if (navigator.share) {
