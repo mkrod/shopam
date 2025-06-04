@@ -1,4 +1,5 @@
-const client = "http://192.168.43.103:5173";
+require("dotenv").config();
+const client = process.env.CLIENT || "http://192.168.43.103:5173";
 
 function generateRandomString(length) {
     const characters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';

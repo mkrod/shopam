@@ -1,5 +1,5 @@
 const { createPool } = require("mysql2");
-require("dotenv");
+require("dotenv").config();
 
 
 const db = createPool({

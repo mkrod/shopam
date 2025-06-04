@@ -19,6 +19,7 @@ const paymentRoutes = require("./routes/payment.route.js");
 
 
 const { client } = require("./misc.js");
+const path = require("path");
 require("dotenv").config();
 const sslOptions = {
   key: fs.readFileSync("./server.key"),
@@ -102,6 +103,18 @@ app.get("/api/notify", (req, res) => {
   delete req.session.notification;
   res.json(data || {});
 });
+
+
+// Serve frontend
+app.use("/", express.static(path.join(__dirname, "../client/dist")));
+
+
+app.use((req, res, next) => {
+    res.setHeader('Content-Type', 'application/javascript');
+    next();
+  });
+  
+
 
 
 async function testConnection() {
