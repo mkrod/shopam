@@ -147,8 +147,9 @@ export const generateSearchSuggestions = (products: Product[]): Suggestion[] => 
     if (product.brand) add(product.brand, "brand");
 
     // variant
-    product.variant?.color?.forEach(color => add(color, "variant"));
-    product.variant?.size?.forEach(size => add(size, "variant"));
+    //product.variant?.color?.forEach(color => add(color, "variant"));
+    //product.variant?.size?.forEach(size => add(size, "variant"));
+    Object.values(product.variant||{}).forEach((v)=>add(v.value, "variant"));
   });
 
   return result;

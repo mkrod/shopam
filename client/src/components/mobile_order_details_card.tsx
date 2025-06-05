@@ -1,4 +1,4 @@
-import { Orders } from '@/constants/provider'
+import { Orders, Variant } from '@/constants/provider'
 import React, { useState } from 'react'
 import { formatNumberWithCommas, getStatusColor } from '@/constants';
 import ActivityIndicator from './activity_indicator';
@@ -24,8 +24,8 @@ const MobileOrderDetailsCard : React.FC<Prop> = ({data}) : React.JSX.Element => 
                 </div>
                 <div className="mobile_order_card_list_item_metadata_container">
                   <h4>{data.title}</h4>
-                  {Object.values(data.variant||{}).map((item:string, index:number) => (
-                    <h6 key={index}>{item}</h6>
+                  {Object.values(data.variant||{}).map((item:Variant, index:number) => (
+                    <h6 key={index}>{item.value}</h6>
                   ))}
                   <h4>{formatNumberWithCommas(Number(Number(data.price.current).toFixed(2))||0)}</h4>
                 </div>

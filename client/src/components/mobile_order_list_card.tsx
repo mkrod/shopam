@@ -25,7 +25,7 @@ const MobileOrderListCard : React.FC<Prop> = ({ data }) : React.JSX.Element => {
     const itemToDisplay: DisplayItem = {
       image: data.data.orders?.[0]?.images?.[0]?.url,
       title: data.data.orders[0].title,
-      variant: data.data.orders[0].variant ? `${data.data.orders[0].variant.size || ''} ${data.data.orders[0].variant.color || ''}`.trim() : undefined,
+      variant: data.data.orders[0].variant ? Object.values(data.data.orders[0].variant).map((v)=> v.value).join(" ") : undefined,
       price: data.data.orders[0].price.current,
       quantity: data.data.orders[0].qty,
     }
