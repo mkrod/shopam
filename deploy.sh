@@ -41,12 +41,14 @@ if [ -d "client" ]; then
     exit 1
   }
 
+#CLIENT
+TARGET_DIR=/var/www/clients/client0/web14/web
 
-# Remove existing contents except .well-known (if needed)
-find /var/www/clients/client0/web14/web/ -mindepth 1 ! -name '.well-known' -exec rm -rf {} +
+# Clean all content inside the target dir
+find "$TARGET_DIR" -mindepth 1 -exec rm -rf {} +
 
-# Move new built files
-mv dist/* /var/www/clients/client0/web14/web/ || {
+# Move the new files
+mv dist/* "$TARGET_DIR"/ || {
   echo "❌ Failed to move built files to app dir"
   exit 1
 }
