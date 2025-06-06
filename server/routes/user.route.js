@@ -4,7 +4,7 @@ const router = express.Router();
 
 
 router.post("/edit", editUserData);
-router.get("/orders/list", getOrderList)
+router.get("/orders/list", getOrderList);
 
 
 
