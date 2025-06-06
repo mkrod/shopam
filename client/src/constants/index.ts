@@ -20,7 +20,8 @@ export const currency : Currency[] = [
   }
 ];
 export const defaultUserDp : string = "https://i.pinimg.com/236x/9d/b6/0b/9db60bcc99768a7b224d7f8647cb95ce.jpg";
-export const server : string = "https://192.168.43.103:3000/api";
+//export const server : string = "https://192.168.43.103:3000/api";
+export const server : string = "https://api.sora.com.ng/api";
 
 export const serverRequest = async (
   method: "post" | "get",

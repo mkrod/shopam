@@ -16,10 +16,11 @@ const categoryRoute = require("./routes/category.route.js");
 const wishListRoutes = require("./routes/wishlist.route.js");
 const userRoute = require("./routes/user.route.js");
 const paymentRoutes = require("./routes/payment.route.js");
+const deployRoutes = require("./routes/deploy.route.js");
 
 
-const { client } = require("./misc.js");
-const path = require("path");
+//const { client } = require("./misc.js");
+//const path = require("path");
 require("dotenv").config();
 const sslOptions = {
   key: fs.readFileSync("./server.key"),
@@ -38,8 +39,7 @@ redisClient.connect().then(() => console.log("✅ Connected to Redis"));
 
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = process.env.CLIENT || [
-      client,
+    const allowedOrigins = process.env.CLIENT ? [process.env.CLIENT] : [
       "http://192.168.43.103",
       "http://192.168.43.103:5173",
       "http://127.0.0.1"
@@ -92,6 +92,7 @@ app.use("/api/categories", categoryRoute);
 app.use("/api/cart", cartRoutes);
 app.use("/api/wishlist", wishListRoutes);
 app.use("/api/pay", paymentRoutes);
+app.use("/deploy", deployRoutes);
 
 
 app.get("/server-view", (req, res) => {
@@ -104,16 +105,6 @@ app.get("/api/notify", (req, res) => {
   res.json(data || {});
 });
 
-
-// Serve frontend
-app.use("/", express.static(path.join(__dirname, "../client/dist")));
-
-
-app.use((req, res, next) => {
-    res.setHeader('Content-Type', 'application/javascript');
-    next();
-  });
-  
 
 
 
@@ -140,4 +131,5 @@ process.on("unhandledRejection", (det) => {
 
 const PORT = 3000;
 const LISTEN = () => console.log("App is Running on port " + PORT);
-https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", LISTEN);
+//https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", LISTEN);
+app.listen(PORT, "0.0.0.0", LISTEN);
