@@ -74,7 +74,7 @@ npm install || {
 echo "♻️ Restarting server..."
 
 if pm2 list | grep -q "Shopam"; then
-  pm2 restart app --name Shopam || {
+  pm2 restart app.js --name Shopam || {
     echo "❌ Server restart failed"
     exit 1
   }
