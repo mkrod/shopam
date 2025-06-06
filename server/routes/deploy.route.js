@@ -3,6 +3,6 @@ const { deployShopAm } = require("../service/deploy");
 const router = express.Router();
 
 
-app.post("/", deployShopAm);
+router.post("/", deployShopAm);
 
 module.exports = router;
