@@ -150,7 +150,7 @@ export const generateSearchSuggestions = (products: Product[]): Suggestion[] => 
     // variant
     //product.variant?.color?.forEach(color => add(color, "variant"));
     //product.variant?.size?.forEach(size => add(size, "variant"));
-    Object.values(product.variant||{}).forEach((v)=>add(v.value, "variant"));
+    Object.values(product.variant||{}).forEach((v)=> v.value? add(v.value, "variant") : null);
   });
 
   return result;
