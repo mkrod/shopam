@@ -41,10 +41,16 @@ if [ -d "client" ]; then
     exit 1
   }
 
-  mv dist/* /var/www/clients/client0/web14/web/ || {
-    echo "❌ Failed to move built files to app dir"
-    exit 1
-  }
+
+# Remove existing contents except .well-known (if needed)
+find /var/www/clients/client0/web14/web/ -mindepth 1 ! -name '.well-known' -exec rm -rf {} +
+
+# Move new built files
+mv dist/* /var/www/clients/client0/web14/web/ || {
+  echo "❌ Failed to move built files to app dir"
+  exit 1
+}
+
 
   # Go back to root project dir
   cd ..
