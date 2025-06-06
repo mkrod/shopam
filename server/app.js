@@ -85,6 +85,7 @@ app.use(
   next();
 });*/
 
+app.set('trust proxy', 1);
 app.use("/api/auth", authRoutes);
 app.use("/api/user", userRoute);
 app.use("/api/products", productRoutes);
