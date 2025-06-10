@@ -97,7 +97,7 @@ const MobileCategory : React.FC<{id: string | undefined; name: string | undefine
         {sorted.length > 0 && (
         <div className="mobile_category_content_container">
             {sorted.slice(0, maxLength).map((item: Product, index: number) => (
-                <MobileProductCard data={item} key={index} />
+                <MobileProductCard data={item} key={item.id+index} />
             ))}
         </div>)}
         {sorted.length < 1 && (

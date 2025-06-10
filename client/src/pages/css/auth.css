@@ -13,16 +13,19 @@
     border: 1px solid var(--border-color);
     border-radius: 5px;
     margin-bottom: 20px;
-    padding: 0  20px;
+    padding: 0 20px;
 }
 
 .auth_input_box_icon_container{
     display: flex;
     align-items: center;
+    justify-content: center;
+    min-width: fit-content;
 }
 
 .auth_input{
     flex: 1;
+    max-width: 100%;
     border: none;
     outline: none;
     font-weight: 600;

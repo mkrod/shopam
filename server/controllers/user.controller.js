@@ -23,6 +23,7 @@ const editUserData = async (req, res) => {
     
 
     const filteredData = { ...data };
+    //console.log(filteredData);
     delete filteredData.email;
 
     const [ query ] = await db.execute("UPDATE users SET user_data = ? WHERE user_id = ?", [JSON.stringify(filteredData), user_id]);
@@ -53,4 +54,21 @@ const getOrderList = async (req, res) => {
 }
 
 
-module.exports = { editUserData, getOrderList }
+const getMessages = async (req, res) => {
+    const { user_id, email } = req.session;
+    if(!user_id || !email) {
+           return res.json(success("Please Log in"));
+    }
+
+    const query = "SELECT * FROM messages WHERE sender_id = ? OR receiver_id = ?";
+    try{
+        const [results] = await db.execute(query, [user_id, user_id]);
+        return res.json(success("success", results));
+      }catch(error){
+          console.log("Error fetching messages for user: " + user_id + " reason: " + error.message);
+          res.json(success("success", []));
+      }
+
+}
+
+module.exports = { editUserData, getOrderList , getMessages }

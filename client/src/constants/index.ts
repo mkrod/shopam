@@ -20,7 +20,7 @@ export const currency : Currency[] = [
   }
 ];
 export const defaultUserDp : string = "https://i.pinimg.com/236x/9d/b6/0b/9db60bcc99768a7b224d7f8647cb95ce.jpg";
-//export const server : string = "https://192.168.43.103:3000/api";
+//export const server : string = "https://192.168.43.104:3000/api";
 export const server : string = "https://api.sora.com.ng/api";
 
 export const serverRequest = async (
@@ -200,4 +200,24 @@ export function formatDeliveryDate(input: Date | string): string {
     : `${day} ${month} ${year}`;
 
   return `${datePart}`;//, ${time}
+}
+
+export function formatChatTime(input: Date | string): string {
+  const date = new Date(input);
+  const now = new Date();
+
+  const day = String(date.getDate()).padStart(2, '0');
+  const month = date.toLocaleString('default', { month: 'short' });
+  const year = date.getFullYear();
+  const hours = date.getHours();
+  const minutes = String(date.getMinutes()).padStart(2, '0');
+  const ampm = hours >= 12 ? 'pm' : 'am';
+  const formattedHour = hours % 12 === 0 ? 12 : hours % 12;
+
+  const time = `${formattedHour}:${minutes}${ampm}`;
+  const datePart = now.getFullYear() === year
+    ? `${day} ${month}`
+    : `${day} ${month} ${year}`;
+
+  return `${datePart}, ${time}`;
 }

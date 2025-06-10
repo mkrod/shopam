@@ -16,7 +16,7 @@
 }
 
 .order_card_image{
-    height: 100%;
+    aspect-ratio: 1/1;
     width: 100%;
 }
 

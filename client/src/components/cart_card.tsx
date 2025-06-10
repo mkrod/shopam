@@ -66,10 +66,13 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
     useEffect(() => {
         if(!data) return;
 
-        const hasVarAmount = Object.values(data.variant||{}).some((val: Variant) => val.price !== 0);
-        const price:number = ((!hasVarAmount ? product?.price.current : Object.values(data.variant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
+        const hasVarAmount = Object.values(data.selectedVariant||{}).some((val: Variant) => val.price !== 0);
+        const price:number = ((!hasVarAmount ? product?.price.current : Object.values(data.selectedVariant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
         setPrice(price)
     },[data, product]);
+
+
+    console.log(data);
 
    return product ? (
     <div style={otherStyles} className='cart_card_container'>
@@ -125,7 +128,7 @@ const CartCard : React.FC<Props> = ({ data, otherStyles, onSelect, allSelected, 
             </div>*/}
 
         <div className="cart_card_variant_container">
-            {Object.values(data.variant||{}).length > 0 && Object.values(data.variant||{}).map((val:Variant, index: number) => (
+            {Object.values(data.selectedVariant||{}).length > 0 && Object.values(data.selectedVariant||{}).map((val:Variant, index: number) => (
                 <span className='cart_card_variant' key={index}>{val.value}</span>
             ))}
         </div>

@@ -7,6 +7,7 @@ const cors = require("cors");
 const { RedisStore} = require("connect-redis");
 const https = require("https");
 const fs = require("fs");
+const { Server } = require("socket.io");
 
 
 const authRoutes = require("./routes/auth.route.js");
@@ -35,15 +36,15 @@ const redisClient = redis.createClient({ url: process.env.REDIS_URL });
 redisClient.on("error", (err) => console.error("Redis error:", err));
 redisClient.connect().then(() => console.log("✅ Connected to Redis"));
 
-
+const allowedOrigins = process.env.CLIENT ? [process.env.CLIENT] : [
+  "http://192.168.43.104",
+  "http://192.168.43.104:5173",
+  "http://127.0.0.1"
+];
 
 const corsOptions = {
   origin: function (origin, callback) {
-    const allowedOrigins = process.env.CLIENT ? [process.env.CLIENT] : [
-      "http://192.168.43.103",
-      "http://192.168.43.103:5173",
-      "http://127.0.0.1"
-    ];
+     allowedOrigins;
     if (!origin || allowedOrigins.includes(origin)) {
       callback(null, true);
     } else {
@@ -80,10 +81,41 @@ app.use(
   })
 );
 
-/*app.use((req, res, next) => {
-  console.log(req.session);
-  next();
-});*/
+const server = https.createServer(sslOptions, app);
+
+const io = new Server(server, {
+  cors: {
+    origin: allowedOrigins,
+    credentials: true
+  }
+});
+
+const ws_clients = new Map();
+
+io.on("connection", (socket) => {
+  console.log("✅ Socket connected:", socket.id);
+
+  socket.on("register_client", ({ user_id }) => {
+    const id = socket.id
+    ws_clients.set(user_id, id);
+    console.log("Connected users: ", ws_clients);
+  })
+
+  socket.on("send_message", (data) => {
+    console.log("📩 Message received:", data);
+    io.emit("receive_message", data);
+  });
+
+  socket.on("disconnect", () => {
+    for(const [user, id] of ws_clients.entries()){
+      if(id === socket.id){
+        ws_clients.delete(user);
+        console.log("❌ Socket disconnected:", socket.id);
+        break;
+      }
+    }
+  });
+});
 
 app.set('trust proxy', 1);
 app.use("/api/auth", authRoutes);
@@ -132,5 +164,5 @@ process.on("unhandledRejection", (det) => {
 
 const PORT = 3000;
 const LISTEN = () => console.log("App is Running on port " + PORT);
-//https.createServer(sslOptions, app).listen(PORT, "0.0.0.0", LISTEN);
+//server.listen(PORT, "0.0.0.0", LISTEN);
 app.listen(PORT, "0.0.0.0", LISTEN);

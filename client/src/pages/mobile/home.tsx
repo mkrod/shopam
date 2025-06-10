@@ -10,12 +10,14 @@ import EmptyProductState from '@/components/empty_product_state';
 import MobileProductCard from '@/components/mobile_product_card';
 import ActivityIndicator from '@/components/activity_indicator';
 import DesktopBanner from '@/components/desktop_banner';
+import FeaturedCard from '@/components/featured_card';
+import { FaCaretLeft, FaCaretRight } from 'react-icons/fa6';
 //import useInfiniteScroll from '@/constants/useInfiniteScroll';
 
 
 const MobileHomePage : React.FC = () : React.JSX.Element => {
 
-  const { desktopBanner, display, categories, products } = useGlobalProvider(); 
+  const { desktopBanner, display, categories, products, featuredPost } = useGlobalProvider(); 
   const navigate = useNavigate();
   const { current_address, address_loading, address_error } = useCurrentAddress();
   const [showingBanner, setShowingBanner] = useState<number>(0);
@@ -79,6 +81,30 @@ const MobileHomePage : React.FC = () : React.JSX.Element => {
 
 
 
+    ////////////paginate Featured card
+    const fpPerView = 1;
+    const [currentFpPage, setCurrentFpPage] = useState<number>(1);
+    const [startEnd, setStartEnd] = useState<{start: number, end: number}>({start: 0, end: fpPerView});
+    const [canNextFp, setCanNextFp] = useState<boolean>(currentFpPage * fpPerView < (featuredPost?.length ?? 0));
+    const [canPrevFp, setCanPrevFp] = useState<boolean>(false);
+  
+    useEffect(() => {
+      if(!featuredPost) return;
+        setCanNextFp(currentFpPage * fpPerView < (featuredPost?.length ?? 0))
+    },  [currentFpPage, featuredPost]);
+  
+    useEffect(() => {
+      setCanPrevFp(startEnd.start > 0);
+    }, [startEnd]);
+    
+    const nextFp = () => {
+      setCurrentFpPage((prev) => prev + 1);
+      setStartEnd((prev) => ({start: prev.start + fpPerView, end: prev.end + fpPerView}))
+    }
+    const prevFp = () => {
+      setCurrentFpPage((prev) => prev - 1);
+      setStartEnd((prev) => ({start: prev.start - fpPerView, end: prev.end - fpPerView}))
+    }
 
 
 
@@ -109,8 +135,8 @@ const MobileHomePage : React.FC = () : React.JSX.Element => {
         <div className='home_mobile_categories_section_container'>
           <span className='home_mobile_categories_title'>Categories</span>
           <div className='home_mobile_categories_container'>
-          {categories.map((item: Category, index: number) => (
-            <div key={index} onClick={() => navigate(returnUrl({
+          {categories.map((item: Category) => (
+            <div key={item.id} onClick={() => navigate(returnUrl({
               goto: "/category",
               params: {name: item.name, id: item.id}
             }))} className="home_mobile_category">{item.name}</div> 
@@ -123,7 +149,7 @@ const MobileHomePage : React.FC = () : React.JSX.Element => {
       {display.mobile && desktopBanner && (
         <div className="home_mobile_banners_container">
           {desktopBanner.map((item: DesktopBannerProp, index: number) => (
-            <div key={index} className={`home_mobile_banner_container ${showingBanner === index ? "home_mobile_banner_active" : ""}`}>
+            <div key={item.id} className={`home_mobile_banner_container ${showingBanner === index ? "home_mobile_banner_active" : ""}`}>
               <DesktopBanner variant="mobile" data={item} />
             </div>
           ))}
@@ -142,25 +168,46 @@ const MobileHomePage : React.FC = () : React.JSX.Element => {
           </div>
 
           {products && products.length > 0 && (<div className="home_mobile_product_list">
-            {recentItems && recentItems.slice(0, maxLength).map((item: Product, index: number) => (
-              <MobileProductCard key={index} data={item} />
+            {recentItems && recentItems.slice(0, maxLength).map((item: Product) => (
+              <MobileProductCard key={item.id} data={item} />
             ))}
           </div>)}
 
-            {canAddMore && !isAddingMoreRecent && (
-                <button onClick={addMoreRecent} className='home_desktop_see_more_item'>
-                    See more
-                </button>
-            )}
-            {isRecentEnded && !isAddingMoreRecent && <span className='home_mobile_product_list_bottom_text'>No more Recent</span>}
-            {isAddingMoreRecent && !isRecentEnded && <div className='desktop_mobile_product_list_bottom_text'>
-                <ActivityIndicator size='small' />
-            </div>}
-            {!products && (<div className='home_mobile_empty_product_state_container'>
-                <EmptyProductState  />
-            </div>)}
+          {canAddMore && !isAddingMoreRecent && (
+              <button onClick={addMoreRecent} className='home_desktop_see_more_item'>
+                  See more
+              </button>
+          )}
+          {isRecentEnded && !isAddingMoreRecent && <span className='home_mobile_product_list_bottom_text'>No more Recent</span>}
+          {isAddingMoreRecent && !isRecentEnded && <div className='desktop_mobile_product_list_bottom_text'>
+              <ActivityIndicator size='small' />
+          </div>}
+          {!products && (<div className='home_mobile_empty_product_state_container'>
+              <EmptyProductState  />
+          </div>)}
+
+          </div>
+          )}
+
+
+
+      {featuredPost && featuredPost.length > 0 && 
+        <div className="mobile_home_feature_card_section">
+            <div className="mobile_home_feature_card_header">
+                <h3 className='mobile_home_feature_card_header_text'>Featured Products</h3>
+                <div className="mobile_home_feature_card_header_navigation_container">
+                    <button onClick={prevFp} disabled={!canPrevFp} className='desktop_home_feature_card_header_navigation'><FaCaretLeft /></button>
+                    <button onClick={nextFp} disabled={!canNextFp} className='desktop_home_feature_card_header_navigation'><FaCaretRight /></button>
+                </div>
             </div>
-            )}
+            <div className="mobile_home_feature_card_container">
+                {featuredPost.slice(startEnd.start, startEnd.end).map((item: Product) => (
+                    <div style={{aspectRatio: "1/1.2", minWidth: "100%"}} key={item.id}>
+                        <FeaturedCard key={item.id} data={item} />
+                    </div>
+                ))}
+            </div>
+        </div>}
     </div>
   )
 }

@@ -16,7 +16,7 @@ const FeaturedCard : React.FC<{data: Product}> = ({ data }) : React.JSX.Element 
         <img src={image} alt='image' className='featured_product_card_image' />
         <div className="featured_product_card_metadata_container">
             <div className="featured_product_card_metadata_main">{ main }</div>
-            <div className="featured_product_card_metadata_description">{ desc }</div>
+            <div className="featured_product_card_metadata_description">{ desc.length > 250 ? desc.slice(0, 250) + "...": desc }</div>
             <div className="featured_product_card_metadata_button_container">
                 <button onClick={() => navigate(returnUrl({
                     goto: "/product",

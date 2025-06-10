@@ -64,6 +64,10 @@
     overflow: auto;
 }
 
+.mobile_checkout_product_preview::-webkit-scrollbar{
+    display: none;
+}
+
 .mobile_checkout_shipping_method_section{
     display: flex;
     flex-direction: column;

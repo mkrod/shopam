@@ -7,6 +7,7 @@ import { returnUrl, formatNumberWithCommas } from '@/constants'
 import { useNavigate } from 'react-router'
 import { addToCart, IncreaseCartItemQty, MinusCartItemQty, removeCartItem, Response } from '@/constants/api'
 import { FaMinus, FaPlus } from 'react-icons/fa6'
+import { VT } from '@/pages/mobile/product_details'
 
 const DesktopProductCard : React.FC<{data: Product}> = ({ data }) : React.JSX.Element => {
 
@@ -40,7 +41,13 @@ const DesktopProductCard : React.FC<{data: Product}> = ({ data }) : React.JSX.El
           return setTimeout(() => setNote(undefined), 2000);
         }
   
-        const response : Response = await addToCart({id: data.id});
+        const uniqueVariants = data.variant?.reduce((acc: VT[], curr: any) => {
+          if (!acc.some(item => item.name === curr.name)) {
+            acc.push(curr);
+          }
+          return acc;
+        }, []);
+        const response: Response = await addToCart({ id: data.id, qty: "1", variant: uniqueVariants });
         if(response.message === "success"){
             setNote({type: "success", title: "Success", body: "Item added to cart"});
             setCartChanged(true);

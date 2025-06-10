@@ -30,17 +30,46 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
       
 
   const navigate = useNavigate()
-  const { user, currency, products, setLoading, setNote, cart } = useGlobalProvider();
+  const { user, currency, products, setLoading, setNote, deliveryFees } = useGlobalProvider();
   const [orders, setOrders] = useState<Orders[]>([]);
   const [message, setMessage] = useState<string>("");
 
+  function computeDeliveryFee ():number {
+    const userState = user.user_data.address?.state;
+    if(!userState) return 0;
+
+    const deliveryConfig = deliveryFees.find((df) => df.state.toLowerCase() === userState.toLowerCase()) || deliveryFees.find((df) => df.state.toLowerCase() === "all other");
+    if(!deliveryConfig) return 0;
+    if(deliveryConfig.feeForAll){
+      const Dfee = deliveryConfig.fee as number;
+      return Dfee;
+    }
+
+    const customizedFee = deliveryConfig.feeBreakdown?.find((fb) => {
+      const min = Number(fb.min);
+      const max = Number(fb.max);
+      return total >= min && total <= max;
+    })?.fee as number || 0;
+
+    return customizedFee;
+  }
+
+  function computeTax () :number {
+      return 0
+  }
+
   function getSalesPrice(cartItem:CartProp):number{ 
     let price = 0;
-    const thisCart = cart?.find((c) => c.id === cartItem.id);
+    //console.log(cartItem.id)
+    const thisCart = data?.find((c) => c.id === cartItem.id);
     const thisProduct = products?.find((p)=>p.id===cartItem.id);
+    //console.log(thisCart, thisProduct);
     if(thisCart&&thisProduct){
-      const hasVarAmount = Object.values(thisCart.variant||{}).some((val: Variant) => val.price !== 0);
-      price = ((!hasVarAmount ? thisProduct?.price.current : Object.values(thisCart.variant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
+
+      const hasVarAmount = Object.values(thisCart.selectedVariant||{}).some((val: Variant) => (val.price !== 0)||(val.price > 0));
+      //console.log(hasVarAmount)
+      price = ((!hasVarAmount ? thisProduct?.price.current : Object.values(thisCart.selectedVariant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
+      //console.log(price);
     }
     return price;
   }
@@ -59,9 +88,9 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
         price: thisProduct.price,
         salePrice: getSalesPrice(item),
         qty: item.qty ?? 1,
-        variant: item.variant,
-          status: "",
-          order_item_id: "",
+        variant: item.selectedVariant,
+        status: "proccessing",
+        order_item_id: "",
       };
     };
 
@@ -75,21 +104,10 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
   const [subTotal, setSubTotal] = useState<number>(0);
   const [extraFee, setExtraFee] = useState<ExtraFee>({});
   useEffect(() => {
-    setExtraFee({
-      delivery:
-        total <= 10
-          ? 2
-          : total <= 50
-          ? 3
-          : total <= 100
-          ? 5
-          : total <= 1000
-          ? 10
-          : total <= 3000
-          ? 30
-          : 50,
-    });
-  }, [total]);
+    if(deliveryMethod === "delivery") return setExtraFee({ delivery: computeDeliveryFee(), tax: computeTax()  });
+    if(deliveryMethod === "pickup") return setExtraFee({ pickup: computeDeliveryFee() - 1000, tax: computeTax()  });
+    
+  }, [total, deliveryMethod]);
   useEffect(() => {
     let sub_total : number = 0;
     orders.forEach((o)=>{
@@ -110,6 +128,10 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
     if(!agreedTerm) return;
     if(!user.user_data.address || !user.user_data.contact || !user.user_data.name){
       setNote({type: "error", title: "Error", body: "Please add contact info and re-try again"});
+      return setTimeout(()=>setNote(undefined), 3000);
+    }
+    if((extraFee.delivery||0) < 1){
+      setNote({type: "error", title: "Error", body: "Product not deliverable to your state"});
       return setTimeout(()=>setNote(undefined), 3000);
     }
 
@@ -151,7 +173,6 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
 
 
 
-
   return (
     <div className='mobile_chceckout_container'>
       <div className="mobile_chceckout_shipping_details_container">
@@ -160,7 +181,7 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
         </div>
         <div className="mobile_chceckout_shipping_details_center">
           <h4>Shipping Address</h4>
-          <p className='mobile_chceckout_shipping_text'>{user.user_data.address || "Not Set"}</p>
+          <p className='mobile_chceckout_shipping_text'>{Object.values(user.user_data?.address||{}).join(", ") || "Not Set"}</p>
           <div className="mobile_checkout_shipping_name_phone">
             <p className='mobile_chceckout_shipping_text'>{(capFirstLetter(user.user_data.name?.first||"")+ " " +  capFirstLetter(user.user_data.name?.last||"") || "Not Set")}</p>
             <p className='mobile_chceckout_shipping_text_fade'>{user.user_data.contact || "Not Set"}</p>
@@ -203,7 +224,7 @@ const MobileCheckout : React.FC<Prop> = ({ data }) : React.JSX.Element => {
       {deliveryMethod  === "delivery" &&  (
         <div className="desktop_checkout_delivery_address_container">
           <span className='desktop_checkout_detail_section_info_title'>Delivery address</span>
-          <h5>{ user.user_data.address || "Not set" }</h5>
+          <h5>{ Object.values(user.user_data?.address||{}).join(", ")  || "Not set" }</h5>
         </div>
       )}
       {deliveryMethod  === "pickup" &&  (

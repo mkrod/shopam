@@ -1,7 +1,8 @@
 import React, { createContext, useContext, useEffect, useState } from 'react'
-import { ExtractDesktopBannerData, getCartItems, getCategories, getFeaturedPost, getHomeBanner, getOrderList, getProducts, getSavedItem } from './api';
+import { ExtractDesktopBannerData, getCartItems, getCategories, getDeliveryFees, getFeaturedPost, getHomeBanner, getMessages, getOrderList, getProducts, getSavedItem, Response } from './api';
 import { generateSearchSuggestions } from '.';
 import { getUserData } from './auth';
+import { MessageResult } from './types';
 
 interface Note {
     type: "error" | "success";
@@ -22,8 +23,9 @@ export interface HomeBanner {
 export interface CartProp {
     id: string;
     qty?: string | number;
-    variant?: Record<string, Variant>;
+    selectedVariant?: Record<string, Variant>;
 }
+
 
 export type Suggestion = {
     type: "title" | "brand" | "category" | "tag" | "variant";
@@ -121,6 +123,20 @@ export interface DesktopBannerProp {
     id: string;
 }
 
+export interface FeeRange {
+    min: number|string; // minimum order amount (inclusive)
+    max: number|string; // maximum order amount (inclusive)
+    fee: number|string; // fee for this price range
+}
+  
+export  interface deliveryBreakdown {
+    state: string; //current state being configured
+    duration: number|string; // estimated number days between order and delivery
+    feeForAll:  boolean; //if true, fee will cover all price range else we'll use feeBreakdown?:
+    fee?: number|string; //number fee for All price range if feeForAll
+    feeBreakdown?: FeeRange[]; //here i need idea of how to type this property for dynamic price range maybe an array, object, or whatever will do the job
+}
+
 export interface User {
         email: string;
         user_id: string;
@@ -129,7 +145,12 @@ export interface User {
                     first?: string;
                     last?: string
                 };
-                address?: string;
+                address?: {
+                    street: string;
+                    city: string;
+                    state: string;
+                    country: string;
+                };
                 contact?: string;
         };
 }
@@ -191,6 +212,8 @@ interface GlobalContext {
     user: User;
     setUserChanged: React.Dispatch<React.SetStateAction<boolean>>;
     orderList: OrderList[];
+    deliveryFees: deliveryBreakdown[];
+    messages: MessageResult[];
 }
 
 interface Display {
@@ -211,6 +234,8 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
         desktop: window.innerWidth > mobile
     });
 
+
+
     useEffect(() => {
         const configDisplay = () : void => {
             if(window.innerWidth > mobile){
@@ -220,7 +245,6 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
             }
         }
         window.addEventListener("resize", configDisplay);
-        setTimeout(() => setLoading(false), 2000);
         return () => window.removeEventListener("resize", configDisplay);
     }, []);
 
@@ -255,6 +279,7 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
         getProducts()
         .then((data: Product[] | undefined) => {
             setProducts(data);
+            setLoading(false);
         })
         .catch((error: Error) => {
             console.log("Product not fetched: ", error.message);
@@ -362,7 +387,49 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
         .catch((err) => console.log("Error fetching orderList: ", err))
     }, [user.email]);
 
+    //getDelivery fees
+    const [deliveryFees, setDeliveryFees] = useState<deliveryBreakdown[]>([]);
+    const [isFetchingFee, setIsFetchingFee] = useState<boolean>(true);
 
+    useEffect(() => {
+        if (!isFetchingFee) return;
+        // Simulate fetching delivery fees
+        getDeliveryFees() // Assuming getDeliveryFees is a function to fetch fees
+            .then((res: Response) => {
+                const fees = JSON.parse(res.data) as deliveryBreakdown[];
+                setDeliveryFees(fees);
+            })
+            .catch((error:Error) => {
+                console.error("Error fetching delivery fees: ", error.message);
+            })
+            .finally(() => {
+                setIsFetchingFee(false);
+            });
+
+    }, [isFetchingFee]);
+
+    ///messages
+
+    const [messages, setMessages] = useState<MessageResult[]>([]);
+    const [fetchingMessages, setFetchingMessages] = useState<boolean>(true);
+    useEffect(() => {
+        if(!user.email || !fetchingMessages) return;
+        getMessages()
+        .then((res:Response) => {
+            const data = res.data as MessageResult[];
+            if(res.message !== "success") setNote({"type":"error","title":res.message});
+            setMessages(data||[]);
+        })
+        .catch((err:Error) => {
+            console.log("Cannot fetch message: ", err.message);
+        })
+        .finally(()=> {
+            setFetchingMessages(false);
+        })
+
+    }, [user, fetchingMessages]);
+
+console.log(messages);
 
     return (
         <GlobalContext.Provider value={{
@@ -384,7 +451,9 @@ export const GlobalProvider: React.FC<{ children: React.ReactNode }> = ({childre
             hotSearch,
             user,
             setUserChanged,
-            orderList
+            orderList,
+            deliveryFees,
+            messages
             }}>
             {children}
         </GlobalContext.Provider>

@@ -29,8 +29,8 @@ const MobileCart: React.FC<{data: CartProp[]}> = ({ data }) => {
       const thisCart = cart?.find((c) => c.id === Cart.id);
       const thisProduct = products.find((p)=>p.id===Cart.id);
       if(thisCart&&thisProduct){
-        const hasVarAmount = Object.values(thisCart.variant||{}).some((val: Variant) => val.price !== 0);
-        const price:number = ((!hasVarAmount ? thisProduct?.price.current : Object.values(thisCart.variant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
+        const hasVarAmount = Object.values(thisCart.selectedVariant||{}).some((val: Variant) => val.price !== 0);
+        const price:number = ((!hasVarAmount ? thisProduct?.price.current : Object.values(thisCart.selectedVariant||{}).find((val: Variant) => val.price !== 0)?.price) || 0);
         let qty: number = thisCart.qty as number || 1;
         total += price*qty;
       }

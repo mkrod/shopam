@@ -1,6 +1,7 @@
 import { CartProp, Category, DesktopBannerProp, HomeBanner, OrderList, Product } from "@/constants/provider";
 import { serverRequest } from ".";
 import { PaymentMethod } from "@/pages/desktop/checkout";
+import { VT } from "@/pages/mobile/product_details";
 
 export interface Response {
     status: number;
@@ -170,7 +171,7 @@ export const getCartItems = async () : Promise<CartProp[]> => {
     return cart;
 }
 
-export const addToCart = async (data: {id: string, qty?: string; variant?: Record<string, any>}) : Promise<Response> => {
+export const addToCart = async (data: {id: string, qty?: string; variant?: VT[]}) : Promise<Response> => {
 
   const result : Response = await serverRequest("post", "cart/add/", data);
 
@@ -236,4 +237,53 @@ export const getOrderList = async ()  : Promise<OrderList[]> => {
 
 
    return data;
+}
+export const NGAStates: {label: string, value: string }[] = [
+  { "label": "Abia", "value": "Abia" },
+  { "label": "Adamawa", "value": "Adamawa" },
+  { "label": "Akwa Ibom", "value": "Akwa_Ibom" },
+  { "label": "Anambra", "value": "Anambra" },
+  { "label": "Bauchi", "value": "Bauchi" },
+  { "label": "Bayelsa", "value": "Bayelsa" },
+  { "label": "Benue", "value": "Benue" },
+  { "label": "Borno", "value": "Borno" },
+  { "label": "Cross River", "value": "Cross_River" },
+  { "label": "Delta", "value": "Delta" },
+  { "label": "Ebonyi", "value": "Ebonyi" },
+  { "label": "Edo", "value": "Edo" },
+  { "label": "Ekiti", "value": "Ekiti" },
+  { "label": "Enugu", "value": "Enugu" },
+  { "label": "Gombe", "value": "Gombe" },
+  { "label": "Imo", "value": "Imo" },
+  { "label": "Jigawa", "value": "Jigawa" },
+  { "label": "Kaduna", "value": "Kaduna" },
+  { "label": "Kano", "value": "Kano" },
+  { "label": "Katsina", "value": "Katsina" },
+  { "label": "Kebbi", "value": "Kebbi" },
+  { "label": "Kogi", "value": "Kogi" },
+  { "label": "Kwara", "value": "Kwara" },
+  { "label": "Lagos", "value": "Lagos" },
+  { "label": "Nasarawa", "value": "Nasarawa" },
+  { "label": "Niger", "value": "Niger" },
+  { "label": "Ogun", "value": "Ogun" },
+  { "label": "Ondo", "value": "Ondo" },
+  { "label": "Osun", "value": "Osun" },
+  { "label": "Oyo", "value": "Oyo" },
+  { "label": "Plateau", "value": "Plateau" },
+  { "label": "Rivers", "value": "Rivers" },
+  { "label": "Sokoto", "value": "Sokoto" },
+  { "label": "Taraba", "value": "Taraba" },
+  { "label": "Yobe", "value": "Yobe" },
+  { "label": "Zamfara", "value": "Zamfara" }
+]
+
+export const getDeliveryFees = async () :Promise<Response>=> {
+  const result : Response = await serverRequest("get", "products/fees/delivery");
+  return result;
+}
+
+
+export const getMessages = async () :Promise<Response>=> {
+  const result : Response = await serverRequest("get", "user/messages");
+  return result;
 }

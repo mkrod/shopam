@@ -412,3 +412,29 @@
     letter-spacing: 0.7px;
 }
 
+.mobile_home_feature_card_section{
+    display: flex;
+    flex-direction: column;
+}
+
+.mobile_home_feature_card_header{
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    height: 50px;
+}
+
+.mobile_home_feature_card_header_navigation_container{
+    margin-left: auto;
+    gap: 15px;
+    display: flex;
+    flex-direction: row;
+    align-self: center;
+}
+
+.mobile_home_feature_card_container{
+    display: flex;
+    flex-direction: row;
+    overflow: auto;
+    
+}

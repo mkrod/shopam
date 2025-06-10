@@ -37,7 +37,7 @@ const MobileSearch : React.FC<Prop> = ({ query, type }) : React.JSX.Element => {
             });
 
             
-            allResults.push(...results);
+            allResults = results;
             
             
 
@@ -46,7 +46,7 @@ const MobileSearch : React.FC<Prop> = ({ query, type }) : React.JSX.Element => {
 
         setTimeout(() => {
             setLoading(false); //anytime request is made, i opened loader then after result is ready, just set it
-            setSearchResult(allResults)
+            setSearchResult(allResults);
         } , 2000);
 
     }, [products, query, type])
@@ -96,8 +96,8 @@ const MobileSearch : React.FC<Prop> = ({ query, type }) : React.JSX.Element => {
 
         {sorted.length > 0 && (
         <div className="mobile_category_content_container">
-            {sorted.slice(0, maxLength).map((item: Product, index: number) => (
-                <MobileProductCard data={item} key={index} />
+            {sorted.slice(0, maxLength).map((item: Product, index:number) => (
+                <MobileProductCard data={item} key={item.id+index} />
             ))}
         </div>)}
         {sorted.length < 1 && (

@@ -4,7 +4,6 @@ import "./css/desktop_tab.css";
 import SearchBox from '@/components/search_box';
 import { FiShoppingBag, FiShoppingCart } from 'react-icons/fi'
 import { Category, Suggestion, useGlobalProvider } from '@/constants/provider';
-import { PiBellSimpleRingingBold } from 'react-icons/pi';
 import { GrFavorite } from 'react-icons/gr';
 import { FaGear } from 'react-icons/fa6';
 import { HiOutlineLogout } from 'react-icons/hi';
@@ -17,10 +16,13 @@ import SearchSuggestion from '../search_suggestion';
 import { logout } from '@/constants/auth';
 import { Response } from '@/constants/api';
 import Avatar from '../avatar';
+import { BiSupport } from 'react-icons/bi';
 //import { compareTwoStrings } from 'string-similarity';
 
-
-const DeskTopTabNavBar : React.FC = () : React.JSX.Element => {
+type Prop = {
+  setOpenChat: React.Dispatch<React.SetStateAction<boolean>>;
+}
+const DeskTopTabNavBar : React.FC<Prop> = ({setOpenChat}) : React.JSX.Element => {
 
   const { display, cart, saved, categories, hotSearch, setLoading, user } = useGlobalProvider();
   const [openMenu, setOpenMenu] = useState<boolean>(false);
@@ -129,9 +131,9 @@ const DeskTopTabNavBar : React.FC = () : React.JSX.Element => {
           <span className="desktop_navbar_right_option_label">Saved</span>
           {saved.length > 0 && <div className='desktop_navbar_right_option_notification_count'>{saved.length}</div>}
         </div>
-        <div className="desktop_navbar_right_option_container">
-          <PiBellSimpleRingingBold  className='icon_cursor_pointer' size={16} />
-          <span className="desktop_navbar_right_option_label">Inbox</span>
+        <div onClick={()=> setOpenChat(true)} className="desktop_navbar_right_option_container">
+          <BiSupport  className='icon_cursor_pointer' size={16} />
+          <span className="desktop_navbar_right_option_label">Support</span>
           <div className='desktop_navbar_right_option_notification_count'>5</div>
         </div>
         <div className="desktop_navbar_right_option_container" style={{marginLeft: 20}}>

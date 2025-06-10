@@ -44,7 +44,7 @@ const addToCart = async (req, res) => {
         const newCart = {
             id: data.id,
             qty: data.qty ?? 1,
-            variant: alignedVariant
+            selectedVariant: alignedVariant
         }
 
         const updatedCart = [...oldCart, newCart];

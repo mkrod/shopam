@@ -17,7 +17,11 @@ import { useNavigate } from 'react-router';
 import { Rating } from 'react-simple-star-rating';
 import stringSimilarity from "string-similarity";
 
-
+export type VT = {
+  name: string; //the variant group e.g size, color
+  value: string;
+  price: number;
+}
 const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.Element => {
 
 
@@ -263,11 +267,7 @@ const ProductMobile : React.FC<{id: string | undefined}> = ({ id }) : React.JSX.
 
       const [cantProceed, setCantProceed] = useState<boolean>(true);
       /// updated variant logic
-      type VT = {
-        name: string; //the variant group e.g size, color
-        value: string;
-        price: number;
-      }
+
       const [productVariant, setProductVariant] = useState<Record<string, VT[]>>({});
       const [isVariant, setIsVariant] = useState<boolean>(false);
       const [selectedVariant, setSelectedVariant] = useState<VT[]>([]);

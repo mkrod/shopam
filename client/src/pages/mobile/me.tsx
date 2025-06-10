@@ -5,22 +5,38 @@ import { FaAddressBook, FaLocationDot, FaPhone, FaUser } from 'react-icons/fa6';
 import ActivityIndicator from '@/components/activity_indicator';
 import { useGlobalProvider } from '@/constants/provider';
 import { serverRequest } from '@/constants';
-import { Response } from '@/constants/api';
+import { NGAStates, Response } from '@/constants/api';
 import { isEmailValid } from '@/constants/auth';
+import DropDownList from '@/components/drop_down_list';
 
 const MobileMe : React.FC = () : React.JSX.Element => {
-    interface Form {
+    interface Form{
         email?:  string;
         name?: {
             first: string;
             last: string;
         }
-        address?: string;
+        address: {
+            street: string;
+            city: string;
+            state: string;
+            country: string;
+        };
         contact?: string;
     } 
     
     const { user, setNote, setUserChanged } = useGlobalProvider();
-    const [form, setForm] = useState<Form>({email: "", name: {first: "", last: ""}, address: "", contact: ""});
+    const [form, setForm] = useState<Form>({
+        email: "", 
+        name: {first: "", last: ""}, 
+        address: {
+            street: "",
+            city: "",
+            state: "",
+            country: "",
+        }, 
+        contact: ""
+    });
     const  [isSubmitting, setIsSubmitting] = useState<boolean>(false);
     useEffect(() => {
         setForm((prev) => ({
@@ -30,7 +46,12 @@ const MobileMe : React.FC = () : React.JSX.Element => {
                 first: user.user_data?.name?.first || "",
                 last: user.user_data?.name?.last || ""
             },
-            address: user.user_data?.address || "",
+            address: user.user_data?.address ||{
+                street: "",
+                city: "",
+                state: "",
+                country:  "",
+            },
             contact: user.user_data?.contact || ""
         }));
     }, [user]);
@@ -93,16 +114,45 @@ const MobileMe : React.FC = () : React.JSX.Element => {
                     setForm((prev) => ({...prev, email: value}))
                     }} name="email" className="auth_input" placeholder='Enter your email' />
             </div>
+            
             <div className="auth_input_box_container">
-                <div className="auth_input_box_icon_container">
-                    <FaAddressBook size={20} />
+                    <div className="auth_input_box_icon_container">
+                        <FaAddressBook size={20} />
+                    </div>
+                    <input type="text" value={form.address?.street} onChange={(e) => {
+                        const value = e.target.value;
+                        setForm((prev) => ({...prev, address: {...prev.address, street: value}}));
+                        }} name="" className="auth_input " placeholder='Street' />
+                    <div onClick={getLocation} className="auth_input_show_hide">
+                        <FaLocationDot  />
+                    </div>
                 </div>
-                <input type="text" value={form.address} onChange={(e) => {
-                    const value = e.target.value;
-                    setForm((prev) => ({...prev, address: value}))
-                    }} name="" className="auth_input" placeholder='Delivery Address' />
-                <div onClick={getLocation} className="auth_input_show_hide">
-                    <FaLocationDot  />
+
+            <div className="auth_dual_input_box_container">
+                <div className="auth_input_box_container dual">
+                    <div className="auth_input_box_icon_container">
+                        <FaAddressBook size={20} />
+                    </div>
+                    <input type="text" value={form.address?.city} onChange={(e) => {
+                        const value = e.target.value;
+                        setForm((prev) => ({...prev, address: {...prev.address, city: value} }));
+                        }} name="" className="auth_input" placeholder='City' />
+                </div>
+                <div className="auth_input_box_container dual">
+                    <div className="auth_input_box_icon_container">
+                        <FaAddressBook size={20} />
+                    </div>
+                    {/*<input type="text" value={form.address?.state} onChange={(e) => {
+                        const value = e.target.value;
+                        setForm((prev) => ({...prev, address: {...prev.address, state: value}}))
+                    }} name="" className="auth_input" placeholder='State' />*/}
+                    <DropDownList
+                     defaultLabel={form.address.state || "State"}
+                     options={NGAStates}
+                     onSelect={(option) => {
+                        setForm((prev) => ({...prev, address: {...prev.address, state: String(option.value)}}));
+                     }}
+                    />
                 </div>
             </div>
             <div className="auth_input_box_container">

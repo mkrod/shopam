@@ -108,7 +108,7 @@ const DesktopHomePage : React.FC = () : React.JSX.Element => {
          <div className="home_desktop_banners_section_container">
             <div className='home_desktop_banners_container'>
             {desktopBanner.map((item: DesktopBannerProp, index: number) => (
-                <div key={index} className={`home_desktop_banner_container ${index === showingBanner ? "home_desktop_banner_showing" : ""}`}>
+                <div key={item.id} className={`home_desktop_banner_container ${index === showingBanner ? "home_desktop_banner_showing" : ""}`}>
                     <DesktopBanner data={item} variant='desktop' />
                 </div>
             ))}
@@ -116,7 +116,7 @@ const DesktopHomePage : React.FC = () : React.JSX.Element => {
 
             <div className="home_desktop_banner_active_indicator">
                 {desktopBanner.map((_, index: number) => (
-                    <div key={index} className={`home_desktop_banner_active ${index === showingBanner ? "home_desktop_banner_is_active" : ""}`}></div>
+                    <div key={_.id} className={`home_desktop_banner_active ${index === showingBanner ? "home_desktop_banner_is_active" : ""}`}></div>
                 ))}
             </div>
         </div>)}
@@ -133,8 +133,8 @@ const DesktopHomePage : React.FC = () : React.JSX.Element => {
 
 
                 <div className="home_desktop_products_container">
-                    {recentItems.length > 0 && recentItems.slice(0, maxLength).map((item: Product, index: number) => (
-                        <DesktopProductCard key={index} data={item} />
+                    {recentItems.length > 0 && recentItems.slice(0, maxLength).map((item: Product) => (
+                        <DesktopProductCard key={item.id} data={item} />
                     ))}
                 </div>
 
@@ -165,9 +165,9 @@ const DesktopHomePage : React.FC = () : React.JSX.Element => {
                 </div>
             </div>
             <div className="desktop_home_feature_card_container">
-                {featuredPost.slice(startEnd.start, startEnd.end).map((item: Product, index: number) => (
-                    <div style={{aspectRatio: "1/1.2"}} key={index}>
-                        <FeaturedCard key={index} data={item} />
+                {featuredPost.slice(startEnd.start, startEnd.end).map((item: Product) => (
+                    <div style={{aspectRatio: "1/1.2"}} key={item.id}>
+                        <FeaturedCard key={item.id} data={item} />
                     </div>
                 ))}
             </div>

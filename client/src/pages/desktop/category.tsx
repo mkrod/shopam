@@ -103,7 +103,7 @@ const DesktopCategory : React.FC<{id: string | undefined; name: string | undefin
       {sorted.length > 0 && (
         <div className="home_desktop_products_container">
             {sorted.slice(0, maxLength).map((item: Product, index: number) => (
-                <DesktopProductCard data={item} key={index} />
+                <DesktopProductCard data={item} key={item.id+index} />
             ))}
         </div>)}
 

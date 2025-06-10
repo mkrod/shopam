@@ -7,6 +7,7 @@ import { useNavigate } from 'react-router';
 import { returnUrl, formatNumberWithCommas } from '@/constants';
 import { addToCart, IncreaseCartItemQty, MinusCartItemQty, removeCartItem, Response } from '@/constants/api';
 import { AiOutlineShoppingCart } from 'react-icons/ai';
+import { VT } from '@/pages/mobile/product_details';
 
 const MobileProductCard : React.FC<{data: Product, extraStyle?: CSSProperties}> = ({ data, extraStyle }) : React.JSX.Element => {
   const [isLoadingPic, setIsLoadingPic] = useState<boolean>(true);
@@ -37,7 +38,13 @@ const MobileProductCard : React.FC<{data: Product, extraStyle?: CSSProperties}> 
           return setTimeout(() => setNote(undefined), 2000);
         }
   
-        const response : Response = await addToCart({id: data.id});
+        const uniqueVariants = data.variant?.reduce((acc: VT[], curr: any) => {
+          if (!acc.some(item => item.name === curr.name)) {
+            acc.push(curr);
+          }
+          return acc;
+        }, []);
+        const response: Response = await addToCart({ id: data.id, qty: "1", variant: uniqueVariants });
         if(response.message === "success"){
             setNote({type: "success", title: "Success", body: "Item added to cart"});
             setCartChanged(true);

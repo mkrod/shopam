@@ -1,8 +1,9 @@
-import React from 'react'
+import React, { useState } from 'react'
 import "./css/tabs_layout.css"
 import { Outlet } from 'react-router'
 import DeskTopTabNavBar from '@/components/navbar/desktop_tab';
 import Footer from '@/components/footer';
+import ChatWidget from '@/components/chat_widget';
 /*import MobileNavbar, { Bar } from '@/components/navbar/mobile';
 import { IoGrid, IoGridOutline } from 'react-icons/io5';
 import { FaHeart, FaRegHeart, FaRegUser, FaUser } from 'react-icons/fa';
@@ -48,12 +49,21 @@ const TabsLayout : React.FC = () : React.JSX.Element => {
     },
   ];*/
 
+  /*useEffect(() => {
+    const src = 'https://helpful-madeleine-61e48d.netlify.app/index.js';
+    const script = document.createElement("script") as HTMLScriptElement;
+    script.src = src;
+    script.referrerPolicy = "no-referrer";
+    document.body.appendChild(script);
+  }, [])*/
+
+  const [openChat, setOpenChat] = useState<boolean>(false);
   
 
   return (
     <div className='tabs_layout_container'>
       <div className="tabs_layout_desktop_tabs_navigation_container">
-        <DeskTopTabNavBar />
+        <DeskTopTabNavBar setOpenChat={setOpenChat} />
       </div>
       <div className="tabs_content_container">
         <Outlet context={{}} />
@@ -63,6 +73,12 @@ const TabsLayout : React.FC = () : React.JSX.Element => {
           tabs={tabBarProp}
         />
       </div>*/}
+      <div className={`chat_overlay_container ${openChat ? "open_chat" : null}`}>
+        <ChatWidget 
+         setOpenChat={setOpenChat}
+         openChat={openChat}
+          />
+      </div>
       <Footer />
     </div>
   )
